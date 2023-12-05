@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="icon_home">\ue607</string>
+    <string name="icon_knowledge">\ue62b</string>
+    <string name="icon_weixin">\ue685</string>
+    <string name="icon_project">\ue623</string>
+    <string name="icon_mine">\ue66e</string>
+
+    <string name="icon_back">\ue641</string>
+    <string name="icon_fail">\ue638</string>
+    <string name="icon_empty">\ue696</string>
+    <string name="icon_top">\ue617</string>
+    <string name="icon_new">\ue8ed</string>
+    <string name="icon_author">\ue608</string>
+    <string name="icon_arrow">\ue601</string>
+    <string name="icon_search">\ue873</string>
+
+</resources>
