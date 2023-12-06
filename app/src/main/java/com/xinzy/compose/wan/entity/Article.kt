@@ -7,36 +7,37 @@ import android.text.TextUtils
 import com.google.gson.annotations.SerializedName
 
 data class Article(
-    var id: Int = 0,
-    var author: String = "",
-    var chapterId: Int = 0,
-    var chapterName: String = "",
+    val id: Int = 0,
+    val author: String = "",
+    val chapterId: Int = 0,
+    val chapterName: String = "",
 
-    var desc: String = "",
-    var link: String = "",
-    var niceDate: String = "",
+    val desc: String = "",
+    val link: String = "",
+    val niceDate: String = "",
 
-    var title: String = "",
-    var projectLink: String? = null,
+    val title: String = "",
+    val projectLink: String? = null,
 
-    var superChapterId: Int = 0,
-    var superChapterName: String = "",
+    val superChapterId: Int = 0,
+    val superChapterName: String = "",
     @SerializedName("envelopePic")
-    var cover: String? = null,
+    val cover: String = "",
 
-    var courseId: Int = 0,
-    var collect: Boolean = false,
-    var fresh: Boolean = false,
-    var publishTime: Long = 0,
-    var type: Int = 0,
-    var userId: Int = 0,
-    var visible: Int = 0,
-    var zan: Int = 0,
+    val courseId: Int = 0,
+    val collect: Boolean = false,
+    val fresh: Boolean = false,
+    val publishTime: Long = 0,
+    val type: Int = 0,
+    val userId: Int = 0,
+    val visible: Int = 0,
+    val zan: Int = 0,
+    val shareUser: String = "",
 
-    var tags: List<Tag>? = null
+    val tags: List<Tag> = emptyList()
 ) : Parcelable {
 
-    val displayAuthor: String get() = if (TextUtils.isEmpty(author)) "匿名" else author
+    val displayAuthor: String get() = if (TextUtils.isEmpty(author)) shareUser else author
 
     val displayTitle: String
         get() = Html.fromHtml(title, 0).toString()
@@ -45,34 +46,29 @@ data class Article(
 
     fun getCategory() = "$superChapterName / $chapterName"
 
-    fun getTagTexts(): List<String> {
-        return mutableListOf<String>().apply {
-            tags?.let { it.forEach { item -> add(item.name)} }
-        }
-    }
-
-    constructor(parcel: Parcel) : this() {
-        id = parcel.readInt()
-        author = parcel.readString() ?: ""
-        chapterId = parcel.readInt()
-        chapterName = parcel.readString() ?: ""
-        desc = parcel.readString() ?: ""
-        link = parcel.readString() ?: ""
-        niceDate = parcel.readString() ?: ""
-        title = parcel.readString() ?: ""
-        projectLink = parcel.readString()
-        superChapterId = parcel.readInt()
-        superChapterName = parcel.readString() ?: ""
-        cover = parcel.readString()
-        courseId = parcel.readInt()
-        collect = parcel.readByte() != 0.toByte()
-        fresh = parcel.readByte() != 0.toByte()
-        publishTime = parcel.readLong()
-        type = parcel.readInt()
-        userId = parcel.readInt()
-        visible = parcel.readInt()
-        zan = parcel.readInt()
-    }
+    constructor(parcel: Parcel) : this(
+        id = parcel.readInt(),
+        author = parcel.readString() ?: "",
+        chapterId = parcel.readInt(),
+        chapterName = parcel.readString() ?: "",
+        desc = parcel.readString() ?: "",
+        link = parcel.readString() ?: "",
+        niceDate = parcel.readString() ?: "",
+        title = parcel.readString() ?: "",
+        projectLink = parcel.readString(),
+        superChapterId = parcel.readInt(),
+        superChapterName = parcel.readString() ?: "",
+        cover = parcel.readString() ?: "",
+        courseId = parcel.readInt(),
+        collect = parcel.readByte() != 0.toByte(),
+        fresh = parcel.readByte() != 0.toByte(),
+        publishTime = parcel.readLong(),
+        type = parcel.readInt(),
+        userId = parcel.readInt(),
+        visible = parcel.readInt(),
+        zan = parcel.readInt(),
+        shareUser = parcel.readString() ?: ""
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
@@ -95,6 +91,7 @@ data class Article(
         parcel.writeInt(userId)
         parcel.writeInt(visible)
         parcel.writeInt(zan)
+        parcel.writeString(shareUser)
     }
 
     override fun describeContents(): Int {
@@ -110,6 +107,4 @@ data class Article(
             return arrayOfNulls(size)
         }
     }
-
-
 }

@@ -30,6 +30,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.xinzy.compose.wan.ui.main.MainTabs
 import com.xinzy.compose.wan.ui.widget.ArticleItem
 import com.xinzy.compose.wan.ui.widget.Banner
+import com.xinzy.compose.wan.ui.widget.LoadingMoreLazyColumn
 import com.xinzy.compose.wan.ui.widget.SwipeRefresh
 import com.xinzy.compose.wan.ui.widget.TitleBar
 import com.xinzy.compose.wan.ui.widget.needLoadingMore
@@ -62,14 +63,18 @@ fun HomeTab(
     ) {
         TitleBar(title = tab.title)
 
-
         SwipeRefresh(
             isRefreshing = refreshing,
             onRefresh = { vm.dispatch(HomeEvent.Refresh) }
         ) {
 
-            LazyColumn(
-                state = lazyState
+            LoadingMoreLazyColumn(
+                state = lazyState,
+                loadAction = {
+                    if (!isRefresh && !isLoadingMore && !isLoadEnd) {
+                        vm.dispatch(HomeEvent.LoadMore)
+                    }
+                }
             ) {
                 // 显示Banner
                 if (banners.isNotEmpty()) {
@@ -114,10 +119,6 @@ fun HomeTab(
                 }
             }
 
-            L.d("${lazyState.isScrollInProgress} ${lazyState.canScrollForward}")
-            if (lazyState.needLoadingMore && !isRefresh && !isLoadingMore && !isLoadEnd) {
-                vm.dispatch(HomeEvent.LoadMore)
-            }
         }
     }
 }

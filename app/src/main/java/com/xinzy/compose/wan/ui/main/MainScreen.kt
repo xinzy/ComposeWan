@@ -1,6 +1,7 @@
-package com.xinzy.compose.wan.ui.main.widget
+package com.xinzy.compose.wan.ui.main
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -13,11 +14,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.xinzy.compose.wan.ui.main.MainTabs
 import com.xinzy.compose.wan.ui.main.chapter.ChapterTab
 import com.xinzy.compose.wan.ui.main.home.HomeTab
 import com.xinzy.compose.wan.ui.main.mine.MineTab
 import com.xinzy.compose.wan.ui.main.project.ProjectTab
+import com.xinzy.compose.wan.util.L
 
 @Composable
 fun MainScreen(
@@ -56,20 +57,32 @@ fun MainScreen(
             }
         }
     ) { values ->
-        println(values)
+        L.d("bottomPadding=${values.calculateBottomPadding()}, topPadding=${values.calculateTopPadding()}")
         when (currentSelected.value) {
             MainTabs.Main -> {
-                HomeTab(tab = MainTabs.Main)
+                HomeTab(
+                    tab = MainTabs.Main,
+                    modifier = Modifier.padding(values)
+                )
             }
 
             MainTabs.Project -> {
-                ProjectTab(tab = MainTabs.Project)
+                ProjectTab(
+                    tab = MainTabs.Project,
+                    modifier = Modifier.padding(values)
+                )
             }
             MainTabs.Chapter -> {
-                ChapterTab(tab = MainTabs.Chapter)
+                ChapterTab(
+                    tab = MainTabs.Chapter,
+                    modifier = Modifier.padding(values)
+                )
             }
             MainTabs.Mine -> {
-                MineTab(tab = MainTabs.Mine)
+                MineTab(
+                    tab = MainTabs.Mine,
+                    modifier = Modifier.padding(values)
+                )
             }
         }
     }

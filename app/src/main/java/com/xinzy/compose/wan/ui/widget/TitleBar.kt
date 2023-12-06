@@ -43,7 +43,8 @@ fun TitleBar(
                 text = title,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary,
-                style = Typography.titleMedium
+                style = Typography.titleMedium,
+                maxLines = 1
             )
         }
 

@@ -36,7 +36,9 @@ fun MineTab(
     tab: MainTabs,
     modifier: Modifier = Modifier
 ) {
-    Column {
+    Column(
+        modifier = modifier
+    ) {
         TitleBar(title = tab.title)
 
         Box(

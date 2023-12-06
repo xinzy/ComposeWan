@@ -25,9 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.xinzy.compose.wan.ui.main.MainTabs
 import com.xinzy.compose.wan.ui.widget.SwipeRefresh
-import com.xinzy.compose.wan.ui.widget.SwipeRefreshState
 import com.xinzy.compose.wan.ui.widget.TitleBar
-import com.xinzy.compose.wan.ui.widget.rememberSwipeRefreshState
 import kotlinx.coroutines.delay
 
 @Composable
@@ -35,7 +33,9 @@ fun ProjectTab(
     tab: MainTabs,
     modifier: Modifier = Modifier
 ) {
-    Column {
+    Column(
+        modifier = modifier
+    ) {
         TitleBar(title = tab.title)
 
         var list by remember {

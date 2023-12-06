@@ -3,6 +3,7 @@ package com.xinzy.compose.wan.http
 import com.xinzy.compose.wan.entity.ApiResult
 import com.xinzy.compose.wan.entity.Article
 import com.xinzy.compose.wan.entity.Banner
+import com.xinzy.compose.wan.entity.Chapter
 import com.xinzy.compose.wan.entity.WanList
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -32,6 +33,10 @@ interface WanApi {
     /** 首页文章列表 */
     @GET("/article/list/{page}/json")
     suspend fun articleList(@Path("page") page: Int): HttpResult<ApiResult<WanList<Article>>>
+
+    /** 体系数据 */
+    @GET("/tree/json")
+    suspend fun chapter(): HttpResult<ApiResult<List<Chapter>>>
 
     companion object {
         private var api: WanApi? = null

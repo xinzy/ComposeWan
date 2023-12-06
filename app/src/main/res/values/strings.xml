@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ComposeWan</string>
+    <string name="title_activity_web_view">WebViewActivity</string>
+    <string name="title_activity_chapter">ChapterActivity</string>
 </resources>
