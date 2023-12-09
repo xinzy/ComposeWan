@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ChapterViewModel : ViewModel() {
@@ -25,7 +24,6 @@ class ChapterViewModel : ViewModel() {
     private fun load() {
         viewState = viewState.copy(refreshing = true)
         viewModelScope.launch {
-            delay(2000)
             val list = ChapterRepository.chapters()
             viewState = viewState.copy(refreshing = false, chapters = list)
         }

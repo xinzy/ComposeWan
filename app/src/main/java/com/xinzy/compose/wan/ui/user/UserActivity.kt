@@ -1,42 +1,54 @@
-package com.xinzy.compose.wan.ui.chapter
+package com.xinzy.compose.wan.ui.user
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.IntDef
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.xinzy.compose.wan.ui.theme.ComposeWanTheme
 
-class ChapterActivity : ComponentActivity() {
+class UserActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val chapterId = intent.getIntExtra("chapterId", 0)
-        val chapterName = intent.getStringExtra("chapterName") ?: ""
+        val type = intent.getIntExtra("type", TYPE_LOGIN)
 
         setContent {
             ComposeWanTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    ChapterScreen(
-                        chapterId = chapterId,
-                        chapterName = chapterName
+                    UserScreen(
+                        type = type,
+                        activity = this
                     )
                 }
             }
         }
     }
 
+
     companion object {
-        fun start(context: Context, chapterId: Int, chapterName: String) {
-            val intent = Intent(context, ChapterActivity::class.java).also {
-                it.putExtra("chapterId", chapterId)
-                it.putExtra("chapterName", chapterName)
+
+        const val TYPE_LOGIN = 1
+        const val TYPE_REGISTER = 2
+
+        @IntDef(value = [TYPE_LOGIN, TYPE_REGISTER])
+        @Retention(AnnotationRetention.SOURCE)
+        @Target(AnnotationTarget.VALUE_PARAMETER)
+        annotation class UserType
+
+        fun start(context: Context, @UserType type: Int) {
+            val intent = Intent(context, UserActivity::class.java).also {
+                it.putExtra("type", type)
             }
             context.startActivity(intent)
         }
     }
+
 }

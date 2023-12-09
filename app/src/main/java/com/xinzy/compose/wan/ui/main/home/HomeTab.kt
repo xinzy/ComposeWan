@@ -61,8 +61,6 @@ fun HomeTab(
     Column(
         modifier = modifier
     ) {
-        TitleBar(title = tab.title)
-
         SwipeRefresh(
             isRefreshing = refreshing,
             onRefresh = { vm.dispatch(HomeEvent.Refresh) }

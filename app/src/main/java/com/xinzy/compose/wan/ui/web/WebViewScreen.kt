@@ -25,6 +25,7 @@ import com.xinzy.compose.wan.ui.widget.ComposeWebView
 import com.xinzy.compose.wan.ui.widget.IconFontText
 import com.xinzy.compose.wan.ui.widget.ProgressBar
 import com.xinzy.compose.wan.ui.widget.TitleBar
+import com.xinzy.compose.wan.ui.widget.WanTopAppBar
 import com.xinzy.compose.wan.util.L
 
 
@@ -47,7 +48,7 @@ fun WebViewScreen(
         }
         var webView: WebView
 
-        TitleBar(
+        WanTopAppBar(
             title = title
         )
 
@@ -82,7 +83,7 @@ fun WebViewScreen(
                 .height(48.dp)
                 .background(MaterialTheme.colorScheme.onPrimary)
         ) {
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = {  }) {
                 IconFontText(resId = R.string.icon_back)
             }
         }

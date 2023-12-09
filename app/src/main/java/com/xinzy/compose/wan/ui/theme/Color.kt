@@ -66,3 +66,9 @@ val md_theme_dark_scrim = Color(0xFF000000)
 
 
 val seed = Color(0xFF6750A4)
+
+object WanColors {
+    val transparent = Color(0x00000000)
+
+    val translucent = Color(0x20000000)
+}

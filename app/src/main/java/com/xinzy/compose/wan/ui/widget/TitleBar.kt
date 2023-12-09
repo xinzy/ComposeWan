@@ -51,7 +51,6 @@ fun TitleBar(
         if (showBackButton) {
             Button(
                 onClick = onBackClick,
-//                modifier = Modifier.background(color = ),
                 contentPadding = PaddingValues()
             ) {
                 IconFontText(

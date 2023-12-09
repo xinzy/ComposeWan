@@ -39,8 +39,6 @@ fun MineTab(
     Column(
         modifier = modifier
     ) {
-        TitleBar(title = tab.title)
-
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -57,7 +55,7 @@ fun MineTab(
 @Preview
 @Composable
 fun MineTabPreview() {
-    MineTab(tab = MainTabs.Mine)
+    MineTab(tab = MainTabs.WeChat)
 }
 
 @Composable

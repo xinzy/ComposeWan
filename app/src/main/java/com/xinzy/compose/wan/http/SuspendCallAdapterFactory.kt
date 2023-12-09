@@ -90,7 +90,7 @@ class SuspendCallAdapterFactory : CallAdapter.Factory() {
                     if (response.isSuccessful) {
                         var apiResult: HttpResult<ApiResult<R>>? = if (body != null) {
                             if (body.isSuccess) HttpResult.Success(body)
-                            else HttpResult.Failure(body.errorCode, body.errorMsg)
+                            else HttpResult.Failure(body.code, body.message)
                         } else {
                             HttpResult.Failure(1, "接口错误")
                         }

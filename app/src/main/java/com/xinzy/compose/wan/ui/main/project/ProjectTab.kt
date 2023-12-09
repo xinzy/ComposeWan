@@ -36,8 +36,6 @@ fun ProjectTab(
     Column(
         modifier = modifier
     ) {
-        TitleBar(title = tab.title)
-
         var list by remember {
             mutableStateOf(List(20) { "Item $it" })
         }

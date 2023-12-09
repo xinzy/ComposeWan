@@ -1,5 +1,6 @@
 package com.xinzy.compose.wan.ui.main.chapter
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,9 +21,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.xinzy.compose.wan.ui.chapter.ChapterActivity
 import com.xinzy.compose.wan.ui.main.MainTabs
 import com.xinzy.compose.wan.ui.widget.ProgressDialog
 import com.xinzy.compose.wan.ui.widget.TitleBar
@@ -32,7 +35,8 @@ import com.xinzy.compose.wan.ui.widget.TitleBar
 fun ChapterTab(
     tab: MainTabs,
     modifier: Modifier = Modifier,
-    vm: ChapterViewModel = viewModel()
+    vm: ChapterViewModel = viewModel(),
+    context: Context = LocalContext.current
 ) {
     val viewState = vm.viewState
     val isRefresh = viewState.refreshing
@@ -41,8 +45,6 @@ fun ChapterTab(
     Column(
         modifier = modifier
     ) {
-        TitleBar(title = tab.title)
-
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -72,6 +74,7 @@ fun ChapterTab(
                             chapter.children?.forEach { child ->
                                 AssistChip(
                                     onClick = {
+                                        ChapterActivity.start(context, child.id, child.name)
                                     },
                                     label = {
                                         Text(

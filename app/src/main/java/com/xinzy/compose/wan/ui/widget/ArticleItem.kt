@@ -87,8 +87,8 @@ fun ArticleItem(
                 if (article.isTop()) {
                     IconFontText(
                         resId = R.string.icon_top,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                     
                     Spacer(modifier = Modifier.size(4.dp))
@@ -97,14 +97,14 @@ fun ArticleItem(
                 if (article.fresh) {
                     IconFontText(
                         resId = R.string.icon_new,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        style = MaterialTheme.typography.bodyMedium
                     )
 
                     Spacer(modifier = Modifier.size(4.dp))
                 }
 
-                article.tags?.forEach {
+                article.tags.forEach {
                     OutlinedButton(
                         onClick = { },
                         modifier = Modifier

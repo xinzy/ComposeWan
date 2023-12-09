@@ -1,6 +1,9 @@
 package com.xinzy.compose.wan.entity
 
 import android.content.Context
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.content.edit
 
 data class User(
@@ -12,13 +15,7 @@ data class User(
     var admin: Boolean = false,
     var token: String = ""
 ) {
-    companion object {
-        const val SP_USER = "user"
-        private val sInstance: User by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) { User() }
-
-        @JvmStatic
-        fun me() = sInstance
-    }
+    var loginState by mutableStateOf(false)
 
     fun save(context: Context) {
         context.getSharedPreferences(SP_USER, Context.MODE_PRIVATE).edit {
@@ -36,9 +33,11 @@ data class User(
         type = sp.getInt("type", 0)
         admin = sp.getBoolean("admin", false)
         token = sp.getString("token", "") ?: ""
+
+        loginState = isLogin
     }
 
-    fun copy(user: User): User {
+    fun login(user: User): User {
         id = user.id
         username = user.username
         nickname = user.nickname
@@ -59,7 +58,17 @@ data class User(
         admin = false
         token = ""
         context.getSharedPreferences(SP_USER, Context.MODE_PRIVATE).edit { clear() }
+
+        loginState = isLogin
     }
 
-    fun isLogin() = id > 0
+    val isLogin get() = id > 0
+
+    companion object {
+        const val SP_USER = "user"
+        private val instance: User by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) { User() }
+
+        @JvmStatic
+        fun me() = instance
+    }
 }

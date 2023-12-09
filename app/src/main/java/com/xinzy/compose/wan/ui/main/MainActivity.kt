@@ -18,9 +18,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             ComposeWanTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    ModalDrawerSheet {
-
-                    }
                     MainScreen()
                 }
             }
