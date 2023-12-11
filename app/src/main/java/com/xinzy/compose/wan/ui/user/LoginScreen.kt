@@ -27,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -37,14 +36,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.xinzy.compose.wan.R
+import com.xinzy.compose.wan.ui.widget.ShowToast
 import com.xinzy.compose.wan.ui.widget.WanTextField
+import com.xinzy.compose.wan.ui.widget.autoHideKeyboard
+import com.xinzy.compose.wan.util.IconFont
 
 @Composable
 fun LoginScreen(
     vm: UserViewModel,
     activity: UserActivity?,
     modifier: Modifier = Modifier,
-    onChangeType: ((Int) -> Unit) = { }
+    onChangeType: ((UserUiType) -> Unit) = { }
 ) {
     val userState = vm.userState
 
@@ -53,6 +55,7 @@ fun LoginScreen(
     var showPassword by remember { mutableStateOf(true) }
 
     if (userState.success) {
+        ShowToast(msg = userState.message)
         activity?.finish()
         return
     }
@@ -60,12 +63,12 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .autoHideKeyboard()
             .padding(
                 top = 96.dp,
                 start = 20.dp,
                 end = 20.dp
             )
-            .verticalScroll(rememberScrollState()),
     ) {
 
         Box(
@@ -90,8 +93,8 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .height(56.dp),
             placeholder = "输入用户名",
-            leadingIcon = R.string.icon_username,
-            trailingIcon = R.string.icon_close,
+            leadingIcon = IconFont.Username,
+            trailingIcon = IconFont.Close,
             onTrailingClick = {
                 username = ""
             },
@@ -113,8 +116,8 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .height(56.dp),
             placeholder = "输入密码",
-            leadingIcon = R.string.icon_password,
-            trailingIcon = if (showPassword) R.string.icon_password_show else R.string.icon_password_hide,
+            leadingIcon = IconFont.Password,
+            trailingIcon = if (showPassword) IconFont.PasswordShow else IconFont.PasswordHide,
             onTrailingClick = {
                 showPassword = !showPassword
             },
@@ -129,7 +132,7 @@ fun LoginScreen(
             )
         )
 
-        if (!userState.success && userState.message.isNotEmpty()) {
+        if (userState.message.isNotEmpty()) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -183,7 +186,7 @@ fun LoginScreen(
         ) {
             Text(
                 modifier = Modifier.clickable {
-                    onChangeType.invoke(UserActivity.TYPE_REGISTER)
+                    onChangeType.invoke(UserUiType.Register)
                 },
                 text = "没有账号? 注册一个吧",
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),

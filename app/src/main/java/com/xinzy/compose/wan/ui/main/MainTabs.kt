@@ -2,6 +2,7 @@ package com.xinzy.compose.wan.ui.main
 
 import androidx.annotation.StringRes
 import com.xinzy.compose.wan.R
+import com.xinzy.compose.wan.util.IconFont
 
 enum class MainTabs(val title: String, val icon: Int) {
     Main("主页", R.drawable.ic_navigation_main),
@@ -19,8 +20,8 @@ enum class MainTabs(val title: String, val icon: Int) {
     }
 }
 
-enum class DrawerItems(val title: String, @StringRes val icon: Int) {
-    Mine("我的", R.string.icon_message),
+enum class DrawerItems(val title: String, val icon: IconFont) {
+    Mine("我的", IconFont.Message),
 
     ;
 }

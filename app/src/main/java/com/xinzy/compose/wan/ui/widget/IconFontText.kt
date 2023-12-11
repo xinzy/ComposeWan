@@ -13,10 +13,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import com.xinzy.compose.wan.R
+import com.xinzy.compose.wan.util.IconFont
 
 @Composable
 fun IconFontText(
-    resId: Int,
+    icon: IconFont,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
@@ -25,7 +26,7 @@ fun IconFontText(
     Text(
         modifier = modifier,
         color = color,
-        text = LocalContext.current.getString(resId),
+        text = icon.text,
         fontSize = fontSize,
         fontFamily = FontFamily(Typeface.createFromAsset(LocalContext.current.assets, "fonts/iconfont.ttf")),
         style = style,
@@ -39,7 +40,7 @@ fun IconFontText(
 @Preview
 fun IconFontTextPreview() {
     IconFontText(
-        resId = R.string.icon_back,
+        icon = IconFont.Author,
         color = Color.Red
     )
 }

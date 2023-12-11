@@ -20,18 +20,25 @@
       "unicode_decimal": 59280
     },
     {
-      "icon_id": "604704",
-      "name": "置顶",
-      "font_class": "zhiding",
-      "unicode": "e637",
-      "unicode_decimal": 58935
-    },
-    {
       "icon_id": "688576",
       "name": "置顶",
-      "font_class": "zhiding1",
+      "font_class": "zhiding",
       "unicode": "e672",
       "unicode_decimal": 58994
+    },
+    {
+      "icon_id": "982499",
+      "name": "排行",
+      "font_class": "paixing",
+      "unicode": "e66e",
+      "unicode_decimal": 58990
+    },
+    {
+      "icon_id": "1166148",
+      "name": "新",
+      "font_class": "iconfontzhizuobiaozhun023147",
+      "unicode": "e695",
+      "unicode_decimal": 59029
     },
     {
       "icon_id": "1273141",
@@ -209,6 +216,13 @@
       "unicode_decimal": 58906
     },
     {
+      "icon_id": "9593042",
+      "name": "置顶",
+      "font_class": "zhiding1",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
       "icon_id": "10294673",
       "name": "back",
       "font_class": "back",
@@ -223,11 +237,32 @@
       "unicode_decimal": 58701
     },
     {
+      "icon_id": "12497990",
+      "name": "我的收藏",
+      "font_class": "wodeshoucang",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "12975023",
+      "name": "积分",
+      "font_class": "jifen",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
       "icon_id": "26503299",
       "name": "密码",
       "font_class": "mima",
-      "unicode": "e61b",
-      "unicode_decimal": 58907
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "27253666",
+      "name": "退出登录",
+      "font_class": "tuichudenglu",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
     },
     {
       "icon_id": "35154354",

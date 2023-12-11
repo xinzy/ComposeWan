@@ -16,6 +16,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.xinzy.compose.wan.ui.theme.WanColors
+import com.xinzy.compose.wan.util.IconFont
 
 
 @Composable
@@ -24,8 +25,8 @@ fun WanTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     placeholder: String = "",
-    @StringRes leadingIcon: Int? = null,
-    @StringRes trailingIcon: Int? = null,
+    leadingIcon: IconFont? = null,
+    trailingIcon: IconFont? = null,
     onTrailingClick: () -> Unit = { },
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,

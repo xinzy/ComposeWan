@@ -16,13 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.xinzy.compose.wan.util.IconFont
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WanTopAppBar(
     title: String,
     modifier: Modifier = Modifier,
-    @StringRes navigationIcon: Int? = null,
+    navigationIcon: IconFont? = null,
     onNavigationAction: (() -> Unit) = { }
 ) {
     TopAppBar(

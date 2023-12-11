@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xinzy.compose.wan.R
 import com.xinzy.compose.wan.ui.theme.Typography
+import com.xinzy.compose.wan.util.IconFont
 
 @Composable
 fun TitleBar(
@@ -54,7 +55,7 @@ fun TitleBar(
                 contentPadding = PaddingValues()
             ) {
                 IconFontText(
-                    resId = R.string.icon_back,
+                    IconFont.Back,
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 24.sp
                 )

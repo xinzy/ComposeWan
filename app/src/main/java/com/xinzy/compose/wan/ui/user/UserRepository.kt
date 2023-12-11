@@ -21,14 +21,16 @@ object UserRepository {
         }
     }
 
-    suspend fun register(username: String, password: String, confirm: String): User? =
+    suspend fun register(username: String, password: String, confirm: String): Pair<User?, String> =
         when (val result = WanApi.api().register(username, password, confirm)) {
-            is HttpResult.Failure -> null
+            is HttpResult.Failure -> {
+                null to result.msg
+            }
             is HttpResult.Success -> {
                 if (result.data.isSuccess) {
-                    result.data.data
+                    result.data.data to "注册成功"
                 } else {
-                    null
+                    null to result.data.message
                 }
             }
         }

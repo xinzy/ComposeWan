@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class UserViewModel : ViewModel() {
 
-    var userState by mutableStateOf(UserState())
+    var userState by mutableStateOf(UserState<Nothing>())
 
     fun dispatch(event: UserEvent) {
         when (event) {
@@ -43,6 +43,28 @@ class UserViewModel : ViewModel() {
     }
 
     private fun register(username: String, password: String, confirm: String) {
-
+        if (username.isEmpty()) {
+            userState = userState.copy(message = "请输入用户名")
+            return
+        }
+        if (password.isEmpty()) {
+            userState = userState.copy(message = "请输入密码")
+            return
+        }
+        if (password != confirm) {
+            userState = userState.copy(message = "两次密码不一致")
+            return
+        }
+        userState = userState.copy(loading = true, message = "")
+        viewModelScope.launch {
+            val result = UserRepository.register(username, password, password)
+            result.first?.let {
+                User.me().login(it)
+                it.save(WanApplication.getInstance())
+                userState = userState.copy(loading = false, success = true, message = result.second)
+            } ?: run {
+                userState = userState.copy(loading = false, message = result.second)
+            }
+        }
     }
 }

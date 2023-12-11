@@ -1,6 +1,6 @@
 @font-face {
   font-family: "iconfont"; /* Project id  */
-  src: url('iconfont.ttf?t=1702027863631') format('truetype');
+  src: url('iconfont.ttf?t=1702284898100') format('truetype');
 }
 
 .iconfont {
@@ -20,11 +20,15 @@
 }
 
 .icon-zhiding:before {
-  content: "\e637";
+  content: "\e672";
 }
 
-.icon-zhiding1:before {
-  content: "\e672";
+.icon-paixing:before {
+  content: "\e66e";
+}
+
+.icon-iconfontzhizuobiaozhun023147:before {
+  content: "\e695";
 }
 
 .icon-touxiang:before {
@@ -127,6 +131,10 @@
   content: "\e61a";
 }
 
+.icon-zhiding1:before {
+  content: "\e643";
+}
+
 .icon-back:before {
   content: "\e602";
 }
@@ -135,8 +143,20 @@
   content: "\e54d";
 }
 
-.icon-mima:before {
+.icon-wodeshoucang:before {
   content: "\e61b";
+}
+
+.icon-jifen:before {
+  content: "\e638";
+}
+
+.icon-mima:before {
+  content: "\e61c";
+}
+
+.icon-tuichudenglu:before {
+  content: "\e61e";
 }
 
 .icon-a-shoucangweishoucang:before {

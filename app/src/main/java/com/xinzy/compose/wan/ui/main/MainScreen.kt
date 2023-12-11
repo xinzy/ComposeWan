@@ -50,8 +50,10 @@ import com.xinzy.compose.wan.ui.main.wechat.WechatTab
 import com.xinzy.compose.wan.ui.theme.WanColors
 import com.xinzy.compose.wan.ui.theme.WanShapes
 import com.xinzy.compose.wan.ui.user.UserActivity
+import com.xinzy.compose.wan.ui.user.UserUiType
 import com.xinzy.compose.wan.ui.widget.IconFontText
 import com.xinzy.compose.wan.ui.widget.WanTopAppBar
+import com.xinzy.compose.wan.util.IconFont
 import com.xinzy.compose.wan.util.L
 
 @Composable
@@ -107,7 +109,7 @@ fun MainScreen(
             topBar = {
                 WanTopAppBar(
                     title = currentSelected.title,
-                    navigationIcon = R.string.icon_menu,
+                    navigationIcon = IconFont.Menu,
                     onNavigationAction = {
                         isOpenDrawer = true
                     }
@@ -189,45 +191,70 @@ fun MainDrawer(
     val drawerItems = DrawerItems.values()
 
     Column {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 36.dp, bottom = 24.dp),
-            contentAlignment = Alignment.Center
+                .padding(top = 36.dp, bottom = 24.dp)
         ) {
-            Column {
-                if (loginState) {
+            if (loginState) {
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                        .clickable {
+                            UserActivity.start(context, UserUiType.Mine)
+                            onDismissDrawer()
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
                     IconFontText(
-                        resId = R.string.icon_avatar,
+                        icon = IconFont.Avatar,
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.displayLarge
                     )
+                }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                        .clickable {
+                            UserActivity.start(context, UserUiType.Mine)
+                            onDismissDrawer()
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(
                         text = User.me().nickname,
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.titleMedium
                     )
-                } else {
+                }
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
                     IconFontText(
                         modifier = Modifier
                             .clickable {
-                                UserActivity.start(context, UserActivity.TYPE_LOGIN)
+                                UserActivity.start(context, UserUiType.Login)
                                 onDismissDrawer()
                             },
-                        resId = R.string.icon_avatar,
+                        icon = IconFont.Avatar,
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.displayLarge
                     )
+                }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(
                         modifier = Modifier
                             .clickable {
-                                UserActivity.start(context, UserActivity.TYPE_LOGIN)
+                                UserActivity.start(context, UserUiType.Login)
                                 onDismissDrawer()
                             },
                         text = "未登录",
@@ -259,7 +286,7 @@ fun MainDrawer(
                     },
                     icon = {
                         IconFontText(
-                            resId = item.icon,
+                            icon = item.icon,
                             color = MaterialTheme.colorScheme.onBackground,
                             style = MaterialTheme.typography.bodyMedium
                         )

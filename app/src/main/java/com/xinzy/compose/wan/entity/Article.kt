@@ -42,6 +42,8 @@ data class Article(
     val displayTitle: String
         get() = Html.fromHtml(title, 0).toString()
 
+    val hasAuthor: Boolean get() = !TextUtils.isEmpty(author)
+
     fun isTop() = type == 1
 
     fun getCategory() = "$superChapterName / $chapterName"

@@ -18,13 +18,14 @@ class UserActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val type = intent.getIntExtra("type", TYPE_LOGIN)
+        val type = intent.getIntExtra("type", UserUiType.Login.type)
 
+        val uiType = UserUiType.from(type)
         setContent {
             ComposeWanTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     UserScreen(
-                        type = type,
+                        type = uiType,
                         activity = this
                     )
                 }
@@ -35,17 +36,9 @@ class UserActivity : ComponentActivity() {
 
     companion object {
 
-        const val TYPE_LOGIN = 1
-        const val TYPE_REGISTER = 2
-
-        @IntDef(value = [TYPE_LOGIN, TYPE_REGISTER])
-        @Retention(AnnotationRetention.SOURCE)
-        @Target(AnnotationTarget.VALUE_PARAMETER)
-        annotation class UserType
-
-        fun start(context: Context, @UserType type: Int) {
+        fun start(context: Context, type: UserUiType) {
             val intent = Intent(context, UserActivity::class.java).also {
-                it.putExtra("type", type)
+                it.putExtra("type", type.type)
             }
             context.startActivity(intent)
         }

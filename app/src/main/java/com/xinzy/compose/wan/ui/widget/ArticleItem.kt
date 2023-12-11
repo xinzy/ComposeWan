@@ -20,10 +20,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.xinzy.compose.wan.R
 import com.xinzy.compose.wan.entity.Article
 import com.xinzy.compose.wan.ui.theme.Typography
 import com.xinzy.compose.wan.ui.web.WebViewActivity
+import com.xinzy.compose.wan.util.IconFont
 
 @Composable
 fun ArticleItem(
@@ -44,7 +44,7 @@ fun ArticleItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconFontText(
-                resId = R.string.icon_author,
+                icon = if (article.hasAuthor) IconFont.Author else IconFont.SharedUser,
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.bodySmall
             )
@@ -86,7 +86,7 @@ fun ArticleItem(
             ) {
                 if (article.isTop()) {
                     IconFontText(
-                        resId = R.string.icon_top,
+                        IconFont.Top,
                         color = MaterialTheme.colorScheme.errorContainer,
                         style = MaterialTheme.typography.bodyMedium
                     )
@@ -96,7 +96,7 @@ fun ArticleItem(
 
                 if (article.fresh) {
                     IconFontText(
-                        resId = R.string.icon_new,
+                        IconFont.New,
                         color = MaterialTheme.colorScheme.errorContainer,
                         style = MaterialTheme.typography.bodyMedium
                     )
@@ -114,7 +114,6 @@ fun ArticleItem(
                         Text(
                             text = it.name,
                             color = MaterialTheme.colorScheme.tertiary,
-//                            style = MaterialTheme.typography.bodySmall,
                             fontSize = 9.sp
                         )
                     }
