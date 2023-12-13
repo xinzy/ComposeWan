@@ -1,10 +1,12 @@
 package com.xinzy.compose.wan.entity
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.edit
+import com.xinzy.compose.wan.WanApplication
 
 data class User(
     var id: Int = 0,
@@ -17,15 +19,19 @@ data class User(
 ) {
     var loginState by mutableStateOf(false)
 
-    fun save(context: Context) {
-        context.getSharedPreferences(SP_USER, Context.MODE_PRIVATE).edit {
-            putInt("id", id).putString("username", username).putString("nickname", nickname).putString("icon", icon)
-                .putInt("type", type).putString("token", token).putBoolean("admin", admin)
+    fun save() {
+        sp.edit {
+            this.putInt("id", id)
+                .putString("username", username)
+                .putString("nickname", nickname)
+                .putString("icon", icon)
+                .putInt("type", type)
+                .putString("token", token)
+                .putBoolean("admin", admin)
         }
     }
 
-    fun load(context: Context) {
-        val sp = context.getSharedPreferences(SP_USER, Context.MODE_PRIVATE)
+    fun load() {
         id = sp.getInt("id", 0)
         username = sp.getString("username", "") ?: ""
         nickname = sp.getString("nickname", "") ?: ""
@@ -46,10 +52,11 @@ data class User(
         admin = user.admin
         token = user.token
 
+        loginState = isLogin
         return this
     }
 
-    fun logout(context: Context) {
+    fun logout() {
         id = 0
         username = ""
         nickname = ""
@@ -57,7 +64,9 @@ data class User(
         type = 0
         admin = false
         token = ""
-        context.getSharedPreferences(SP_USER, Context.MODE_PRIVATE).edit { clear() }
+        sp.edit {
+            clear()
+        }
 
         loginState = isLogin
     }
@@ -65,8 +74,11 @@ data class User(
     val isLogin get() = id > 0
 
     companion object {
-        const val SP_USER = "user"
+        private const val SP_USER = "user"
         private val instance: User by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) { User() }
+
+        private val sp: SharedPreferences
+            get() = WanApplication.getInstance().getSharedPreferences(SP_USER, Context.MODE_PRIVATE)
 
         @JvmStatic
         fun me() = instance

@@ -1,20 +1,21 @@
 package com.xinzy.compose.wan.http
 
 import android.annotation.SuppressLint
-import android.content.Context
 import com.xinzy.compose.wan.WanApplication
 import com.xinzy.compose.wan.entity.ApiResult
 import com.xinzy.compose.wan.entity.Article
 import com.xinzy.compose.wan.entity.Banner
 import com.xinzy.compose.wan.entity.Chapter
-import com.xinzy.compose.wan.entity.Coin
+import com.xinzy.compose.wan.entity.Score
 import com.xinzy.compose.wan.entity.User
 import com.xinzy.compose.wan.entity.WanList
+import com.xinzy.compose.wan.util.L
 import com.xinzy.compose.wan.util.md5
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Field
@@ -82,13 +83,16 @@ interface WanApi {
      * 我的积分
      */
     @GET("/lg/coin/userinfo/json")
-    suspend fun coin(): HttpResult<ApiResult<Coin>>
+    suspend fun coin(): HttpResult<ApiResult<Score>>
 
     companion object {
         private var api: WanApi? = null
 
         fun api(): WanApi {
             return api ?: kotlin.run {
+                val logging = HttpLoggingInterceptor(WanLogger())
+                logging.level = HttpLoggingInterceptor.Level.BASIC
+
                 val okHttpClient = OkHttpClient.Builder()
                     .connectTimeout(5, TimeUnit.SECONDS)
                     .readTimeout(5, TimeUnit.SECONDS)
@@ -96,6 +100,7 @@ interface WanApi {
                     .cookieJar(PersistentCookieJar())
                     .sslSocketFactory(createSSLSocketFactory(), TrustAllManager())
                     .hostnameVerifier(TrustHostnameVerifier())
+                    .addNetworkInterceptor(logging)
                     .build()
 
                 Retrofit.Builder()
@@ -135,6 +140,12 @@ interface WanApi {
         override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
 
         override fun getAcceptedIssuers(): Array<X509Certificate> = emptyArray()
+    }
+
+    private class WanLogger : HttpLoggingInterceptor.Logger {
+        override fun log(message: String) {
+            L.v(message)
+        }
     }
 
     private class PersistentCookieJar : CookieJar {

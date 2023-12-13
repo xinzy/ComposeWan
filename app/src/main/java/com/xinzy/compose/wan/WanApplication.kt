@@ -8,8 +8,8 @@ class WanApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        User.me().load(this)
         instance = this
+        User.me().load()
     }
 
     companion object {

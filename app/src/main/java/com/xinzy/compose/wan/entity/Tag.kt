@@ -4,6 +4,6 @@ import androidx.annotation.Keep
 
 @Keep
 data class Tag(
-    var name: String = "",
-    var url: String? = null
+    val name: String = "",
+    val url: String? = null
 )

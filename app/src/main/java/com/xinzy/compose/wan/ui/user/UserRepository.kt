@@ -1,5 +1,6 @@
 package com.xinzy.compose.wan.ui.user
 
+import com.xinzy.compose.wan.entity.Score
 import com.xinzy.compose.wan.entity.User
 import com.xinzy.compose.wan.http.HttpResult
 import com.xinzy.compose.wan.http.WanApi
@@ -34,4 +35,19 @@ object UserRepository {
                 }
             }
         }
+
+    suspend fun logout() {
+        WanApi.api().logout()
+    }
+
+    suspend fun score(): Score? {
+        return when (val result = WanApi.api().coin()) {
+            is HttpResult.Failure -> {
+                null
+            }
+            is HttpResult.Success -> {
+                result.data.data
+            }
+        }
+    }
 }

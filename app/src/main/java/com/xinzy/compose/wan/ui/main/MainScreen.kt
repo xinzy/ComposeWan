@@ -33,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,13 +56,15 @@ import com.xinzy.compose.wan.ui.widget.IconFontText
 import com.xinzy.compose.wan.ui.widget.WanTopAppBar
 import com.xinzy.compose.wan.util.IconFont
 import com.xinzy.compose.wan.util.L
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier
 ) {
 
-    val items = MainTabs.tabs
+    val items = MainTabs.values()
     var currentSelected by remember { mutableStateOf(items[0]) }
 
     var isOpenDrawer by remember { mutableStateOf(false) }
@@ -94,7 +97,7 @@ fun MainScreen(
             ) {
                 MainDrawer(
                     onDismissDrawer = {
-                        if (!isOpenDrawer) {
+                        if (isOpenDrawer) {
                             isOpenDrawer = false
                         }
                     }
@@ -186,6 +189,16 @@ fun MainDrawer(
     context: Context = LocalContext.current,
     onDismissDrawer: () -> Unit = { },
 ) {
+    val coroutine = rememberCoroutineScope()
+
+    fun startActivity(type: UserUiType) {
+        UserActivity.start(context, type)
+        coroutine.launch {
+            delay(5000)
+        }
+        onDismissDrawer()
+    }
+
     val loginState = User.me().loginState
 
     val drawerItems = DrawerItems.values()
@@ -198,14 +211,13 @@ fun MainDrawer(
         ) {
             if (loginState) {
                 Box(
-                    modifier = Modifier.fillMaxWidth()
-                        .clickable {
-                            UserActivity.start(context, UserUiType.Mine)
-                            onDismissDrawer()
-                        },
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
                     IconFontText(
+                        modifier = Modifier.clickable {
+                            startActivity(UserUiType.Mine)
+                        },
                         icon = IconFont.Avatar,
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.displayLarge
@@ -215,14 +227,13 @@ fun MainDrawer(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Box(
-                    modifier = Modifier.fillMaxWidth()
-                        .clickable {
-                            UserActivity.start(context, UserUiType.Mine)
-                            onDismissDrawer()
-                        },
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
+                        modifier = Modifier.clickable {
+                            startActivity(UserUiType.Mine)
+                        },
                         text = User.me().nickname,
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.titleMedium
@@ -236,8 +247,7 @@ fun MainDrawer(
                     IconFontText(
                         modifier = Modifier
                             .clickable {
-                                UserActivity.start(context, UserUiType.Login)
-                                onDismissDrawer()
+                                startActivity(UserUiType.Login)
                             },
                         icon = IconFont.Avatar,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -254,8 +264,7 @@ fun MainDrawer(
                     Text(
                         modifier = Modifier
                             .clickable {
-                                UserActivity.start(context, UserUiType.Login)
-                                onDismissDrawer()
+                                startActivity(UserUiType.Login)
                             },
                         text = "未登录",
                         color = MaterialTheme.colorScheme.onBackground,
@@ -282,7 +291,11 @@ fun MainDrawer(
                     },
                     selected = false,
                     onClick = {
-
+                        if (User.me().isLogin) {
+                            startActivity(item.userUiType)
+                        } else {
+                            startActivity(UserUiType.Login)
+                        }
                     },
                     icon = {
                         IconFontText(
@@ -292,6 +305,12 @@ fun MainDrawer(
                         )
                     },
                     shape = WanShapes.none
+                )
+
+                Spacer(
+                    modifier = Modifier.fillMaxWidth()
+                        .height(1.dp)
+                        .background(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f))
                 )
             }
         }

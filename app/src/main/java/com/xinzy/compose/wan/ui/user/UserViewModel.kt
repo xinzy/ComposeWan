@@ -6,6 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xinzy.compose.wan.WanApplication
+import com.xinzy.compose.wan.entity.Score
+import com.xinzy.compose.wan.entity.ScoreRecord
 import com.xinzy.compose.wan.entity.User
 import kotlinx.coroutines.launch
 
@@ -13,10 +15,15 @@ class UserViewModel : ViewModel() {
 
     var userState by mutableStateOf(UserState<Nothing>())
 
+    var scoreState by mutableStateOf(UserState<Score>())
+    var scoreRecordState by mutableStateOf(UserState<List<ScoreRecord>>())
+
     fun dispatch(event: UserEvent) {
         when (event) {
             is UserEvent.Login -> login(event.username, event.password)
             is UserEvent.Register -> register(event.username, event.password, event.confirm)
+            is UserEvent.Logout -> logout()
+            is UserEvent.Score -> score()
         }
     }
 
@@ -34,7 +41,7 @@ class UserViewModel : ViewModel() {
             val result = UserRepository.login(username, password)
             result.first?.let {
                 User.me().login(it)
-                it.save(WanApplication.getInstance())
+                User.me().save()
                 userState = userState.copy(loading = false, success = true, message = result.second)
             } ?: run {
                 userState = userState.copy(loading = false, message = result.second)
@@ -60,11 +67,25 @@ class UserViewModel : ViewModel() {
             val result = UserRepository.register(username, password, password)
             result.first?.let {
                 User.me().login(it)
-                it.save(WanApplication.getInstance())
+                User.me().save()
                 userState = userState.copy(loading = false, success = true, message = result.second)
             } ?: run {
                 userState = userState.copy(loading = false, message = result.second)
             }
+        }
+    }
+
+    private fun logout() {
+        viewModelScope.launch {
+            UserRepository.logout()
+            User.me().logout()
+        }
+    }
+
+    private fun score() {
+        viewModelScope.launch {
+            val score = UserRepository.score()
+            scoreState = scoreState.copy(data = score)
         }
     }
 }

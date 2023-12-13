@@ -23,7 +23,7 @@ enum class IconFont(val text: String) {
     Forward("\ue623"),
 
     Username("\ue61a"),
-    Password("\ue61b"),
+    Password("\ue61c"),
     PasswordShow("\ue54a"),
     PasswordHide("\ue70f"),
 

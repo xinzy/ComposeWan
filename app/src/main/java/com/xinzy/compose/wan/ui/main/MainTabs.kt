@@ -1,7 +1,7 @@
 package com.xinzy.compose.wan.ui.main
 
-import androidx.annotation.StringRes
 import com.xinzy.compose.wan.R
+import com.xinzy.compose.wan.ui.user.UserUiType
 import com.xinzy.compose.wan.util.IconFont
 
 enum class MainTabs(val title: String, val icon: Int) {
@@ -12,16 +12,14 @@ enum class MainTabs(val title: String, val icon: Int) {
     Nav("导航", R.drawable.ic_navigation_nav),
 
     ;
-
-    companion object {
-        val tabs = listOf(
-            Main, WeChat, Chapter, Project, Nav
-        )
-    }
 }
 
-enum class DrawerItems(val title: String, val icon: IconFont) {
-    Mine("我的", IconFont.Message),
+enum class DrawerItems(val title: String, val icon: IconFont, val userUiType: UserUiType) {
+    Mine("我的", IconFont.Username, UserUiType.Mine),
+    Score("我的积分", IconFont.Score, UserUiType.Score),
+    Rank("积分排行", IconFont.Rank, UserUiType.Rank),
+    Favor("我的收藏", IconFont.MyFavor, UserUiType.Favor),
+    Message("我的消息", IconFont.Message, UserUiType.Message),
 
     ;
 }

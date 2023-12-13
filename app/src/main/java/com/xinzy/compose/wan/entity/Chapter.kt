@@ -6,13 +6,13 @@ import androidx.annotation.Keep
 
 @Keep
 data class Chapter(
-    var id: Int = 0,
-    var name: String = "",
-    var order: Int = 0,
-    var parentChapterId: Int = 0,
-    var visible: Int = 0,
-    var userControlSetTop: Boolean = false,
-    var children: List<Chapter>? = null
+    val id: Int = 0,
+    val name: String = "",
+    val order: Int = 0,
+    val parentChapterId: Int = 0,
+    val visible: Int = 0,
+    val userControlSetTop: Boolean = false,
+    val children: List<Chapter>? = null
 ) : Parcelable {
 
     fun getDisplayName() = name.replace("&amp;", "")
@@ -25,15 +25,15 @@ data class Chapter(
 
     val hasChild get() = children?.isNotEmpty() ?: false
 
-    constructor(parcel: Parcel) : this() {
-        id = parcel.readInt()
-        name = parcel.readString() ?: ""
-        order = parcel.readInt()
-        parentChapterId = parcel.readInt()
-        visible = parcel.readInt()
-        userControlSetTop = parcel.readByte() != 0.toByte()
+    constructor(parcel: Parcel) : this(
+        id = parcel.readInt(),
+        name = parcel.readString() ?: "",
+        order = parcel.readInt(),
+        parentChapterId = parcel.readInt(),
+        visible = parcel.readInt(),
+        userControlSetTop = parcel.readByte() != 0.toByte(),
         children = parcel.createTypedArrayList(CREATOR)
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)

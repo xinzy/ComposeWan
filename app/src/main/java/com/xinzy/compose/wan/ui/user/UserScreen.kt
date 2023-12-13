@@ -8,7 +8,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.xinzy.compose.wan.R
 import com.xinzy.compose.wan.ui.widget.WanTopAppBar
 import com.xinzy.compose.wan.util.IconFont
 
@@ -53,10 +52,26 @@ fun UserScreen(
                 )
             }
             UserUiType.Mine -> {
-                MinScreen(
+                MineScreen(
                     vm = vm,
                     activity = activity,
                 )
+            }
+
+            UserUiType.Favor -> {
+
+            }
+
+            UserUiType.Message -> {
+
+            }
+
+            UserUiType.Rank -> {
+
+            }
+
+            UserUiType.Score -> {
+
             }
         }
     }

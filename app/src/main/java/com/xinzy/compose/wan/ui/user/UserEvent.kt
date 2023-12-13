@@ -12,4 +12,8 @@ sealed class UserEvent {
         val password: String,
         val confirm: String,
     ) : UserEvent()
+
+    object Logout : UserEvent()
+
+    object Score: UserEvent()
 }
