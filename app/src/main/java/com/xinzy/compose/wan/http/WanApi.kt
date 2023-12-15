@@ -7,6 +7,7 @@ import com.xinzy.compose.wan.entity.Article
 import com.xinzy.compose.wan.entity.Banner
 import com.xinzy.compose.wan.entity.Chapter
 import com.xinzy.compose.wan.entity.Score
+import com.xinzy.compose.wan.entity.ScoreRecord
 import com.xinzy.compose.wan.entity.User
 import com.xinzy.compose.wan.entity.WanList
 import com.xinzy.compose.wan.util.L
@@ -85,13 +86,16 @@ interface WanApi {
     @GET("/lg/coin/userinfo/json")
     suspend fun coin(): HttpResult<ApiResult<Score>>
 
+    @GET("/lg/coin/list/{page}/json")
+    suspend fun coinList(@Path("page") page: Int): HttpResult<ApiResult<WanList<ScoreRecord>>>
+
     companion object {
         private var api: WanApi? = null
 
         fun api(): WanApi {
             return api ?: kotlin.run {
                 val logging = HttpLoggingInterceptor(WanLogger())
-                logging.level = HttpLoggingInterceptor.Level.BASIC
+                logging.level = HttpLoggingInterceptor.Level.BODY
 
                 val okHttpClient = OkHttpClient.Builder()
                     .connectTimeout(5, TimeUnit.SECONDS)

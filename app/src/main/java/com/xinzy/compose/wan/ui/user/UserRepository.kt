@@ -1,7 +1,10 @@
 package com.xinzy.compose.wan.ui.user
 
+import com.xinzy.compose.wan.entity.ApiResult
 import com.xinzy.compose.wan.entity.Score
+import com.xinzy.compose.wan.entity.ScoreRecord
 import com.xinzy.compose.wan.entity.User
+import com.xinzy.compose.wan.entity.WanList
 import com.xinzy.compose.wan.http.HttpResult
 import com.xinzy.compose.wan.http.WanApi
 
@@ -47,6 +50,17 @@ object UserRepository {
             }
             is HttpResult.Success -> {
                 result.data.data
+            }
+        }
+    }
+
+    suspend fun scoreList(page: Int): ApiResult<WanList<ScoreRecord>> {
+        return when (val result = WanApi.api().coinList(page)) {
+            is HttpResult.Failure -> {
+                ApiResult(result.code, result.msg)
+            }
+            is HttpResult.Success -> {
+                result.data
             }
         }
     }

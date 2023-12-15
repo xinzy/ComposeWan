@@ -1,5 +1,6 @@
 package com.xinzy.compose.wan.ui.user
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,13 +23,30 @@ fun UserScreen(
         mutableStateOf(type)
     }
 
+    // 点击返回的处理
+    fun onBackHandler() {
+        when (typeState) {
+            UserUiType.Register -> typeState = UserUiType.Login
+
+            UserUiType.Login,
+            UserUiType.Mine -> activity.finish()
+
+            UserUiType.Favor,
+            UserUiType.Message,
+            UserUiType.Rank,
+            UserUiType.Score -> typeState = UserUiType.Mine
+        }
+    }
+
+    BackHandler(onBack = ::onBackHandler)
+
     Column {
         val title = typeState.title
         WanTopAppBar(
             title = title,
             navigationIcon = IconFont.Back,
             onNavigationAction = {
-                activity.finish()
+                onBackHandler()
             }
         )
 
@@ -55,6 +73,18 @@ fun UserScreen(
                 MineScreen(
                     vm = vm,
                     activity = activity,
+                    onScoreClick = {
+                        typeState = UserUiType.Score
+                    },
+                    onRankClick = {
+                        typeState = UserUiType.Rank
+                    },
+                    onFavorClick = {
+                        typeState = UserUiType.Favor
+                    },
+                    onMessageClick = {
+                        typeState = UserUiType.Message
+                    }
                 )
             }
 
@@ -71,7 +101,10 @@ fun UserScreen(
             }
 
             UserUiType.Score -> {
-
+                ScoreScreen(
+                    vm = vm,
+                    activity = activity
+                )
             }
         }
     }

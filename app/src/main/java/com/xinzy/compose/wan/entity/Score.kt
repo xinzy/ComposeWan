@@ -8,6 +8,6 @@ data class Score(
     val coin: Int = 0,
     val userId: Int = 0,
     val username: String = "",
-    val level: Int,
-    val nickname: String
+    val level: Int = 0,
+    val nickname: String = ""
 )

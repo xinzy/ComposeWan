@@ -16,4 +16,8 @@ sealed class UserEvent {
     object Logout : UserEvent()
 
     object Score: UserEvent()
+
+    object ScoreRecordRefresh: UserEvent()
+
+    object ScoreRecord: UserEvent()
 }

@@ -52,9 +52,13 @@ import kotlinx.coroutines.launch
 fun MineScreen(
     vm: UserViewModel,
     activity: UserActivity?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onScoreClick: SimpleCallback,
+    onRankClick: SimpleCallback,
+    onMessageClick: SimpleCallback,
+    onFavorClick: SimpleCallback
 ) {
-    val score = vm.scoreState.data
+    val scoreState = vm.scoreState
 
     var showLogoutConfirm by remember { mutableStateOf(false) }
 
@@ -72,10 +76,14 @@ fun MineScreen(
     ) {
         MineContent(
             modifier = Modifier.fillMaxSize(),
-            score = score,
+            score = scoreState.data,
             onLogout = {
                 showLogoutConfirm = true
-            }
+            },
+            onScore = onScoreClick,
+            onRank = onRankClick,
+            onMessage = onMessageClick,
+            onFavor = onFavorClick
         )
 
         if (showLogoutConfirm) {
@@ -107,8 +115,12 @@ fun MineScreen(
 @Composable
 private fun MineContent(
     modifier: Modifier = Modifier,
-    score: Score? = null,
-    onLogout: SimpleCallback
+    score: Score,
+    onLogout: SimpleCallback,
+    onScore: SimpleCallback,
+    onRank: SimpleCallback,
+    onMessage: SimpleCallback,
+    onFavor: SimpleCallback
 ) {
     Column(
         modifier = modifier
@@ -156,9 +168,9 @@ private fun MineContent(
                     .fillMaxHeight(),
                 icon = IconFont.Rank,
                 text = "排行",
-                content = score?.rank?.toString() ?: "0",
+                content = score.rank.toString(),
                 onClick = {
-
+                    onRank()
                 }
             )
 
@@ -168,9 +180,9 @@ private fun MineContent(
                     .fillMaxHeight(),
                 icon = IconFont.Score,
                 text = "积分",
-                content = score?.coin?.toString() ?: "0",
+                content = score.coin.toString(),
                 onClick = {
-
+                    onScore()
                 }
             )
         }
@@ -183,14 +195,16 @@ private fun MineContent(
 
             SettingItem(
                 icon = IconFont.MyFavor,
-                text = "我的收藏"
+                text = "我的收藏",
+                onClick = onFavor
             )
 
             DividerLine()
 
             SettingItem(
                 icon = IconFont.Message,
-                text = "我的消息"
+                text = "我的消息",
+                onClick = onMessage
             )
 
             DividerLine()
@@ -400,15 +414,6 @@ private fun RankButton(
             )
         }
     }
-}
-
-@Composable
-@Preview
-fun MineScreenPreview() {
-    MineScreen(
-        vm = viewModel(),
-        activity = null
-    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

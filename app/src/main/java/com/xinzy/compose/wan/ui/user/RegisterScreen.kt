@@ -57,8 +57,8 @@ fun RegisterScreen(
     var showPassword by remember { mutableStateOf(true) }
     var showConfirmPassword by remember { mutableStateOf(true) }
 
-    if (userState.success) {
-        ShowToast(msg = userState.message)
+    if (userState.isSuccess) {
+        ShowToast(msg = userState.successData as String)
         activity?.finish()
         return
     }
@@ -162,7 +162,7 @@ fun RegisterScreen(
             )
         )
 
-        if (userState.message.isNotEmpty()) {
+        if (userState.isFailure) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -173,7 +173,7 @@ fun RegisterScreen(
                     .padding(end = 24.dp)
             ) {
                 Text(
-                    text = userState.message,
+                    text = userState.errorMessage,
                     color = MaterialTheme.colorScheme.onError,
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -195,7 +195,7 @@ fun RegisterScreen(
                     vm.dispatch(UserEvent.Register(username, password, confirmPassword))
                 }
             ) {
-                if (userState.loading) {
+                if (userState.isLoading) {
                     CircularProgressIndicator()
                 } else {
                     Text(

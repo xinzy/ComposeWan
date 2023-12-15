@@ -7,7 +7,7 @@ data class ApiResult<T>(
     val code: Int,
     @SerializedName("errorMsg")
     val message: String,
-    val data: T?
+    val data: T? = null
 ) {
 
     val isSuccess: Boolean get() = code == 0
