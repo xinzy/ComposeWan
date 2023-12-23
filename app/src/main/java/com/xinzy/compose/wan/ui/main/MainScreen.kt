@@ -6,16 +6,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -25,12 +22,11 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,13 +37,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.xinzy.compose.wan.R
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.xinzy.compose.wan.entity.User
-import com.xinzy.compose.wan.ui.main.chapter.ChapterTab
-import com.xinzy.compose.wan.ui.main.home.HomeTab
-import com.xinzy.compose.wan.ui.main.nav.NavTab
-import com.xinzy.compose.wan.ui.main.project.ProjectTab
-import com.xinzy.compose.wan.ui.main.wechat.WechatTab
 import com.xinzy.compose.wan.ui.theme.WanColors
 import com.xinzy.compose.wan.ui.theme.WanShapes
 import com.xinzy.compose.wan.ui.user.UserActivity
@@ -55,14 +46,24 @@ import com.xinzy.compose.wan.ui.user.UserUiType
 import com.xinzy.compose.wan.ui.widget.IconFontText
 import com.xinzy.compose.wan.ui.widget.WanTopAppBar
 import com.xinzy.compose.wan.util.IconFont
-import com.xinzy.compose.wan.util.L
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    vm: MainViewModel = viewModel()
 ) {
+    val homeTabConfig = HomeTabConfig(lazyListState = rememberLazyListState())
+    val chapterTabConfig = ChapterTabConfig(lazyListState = rememberLazyListState())
+    val navigationTabConfig = NavigationTabConfig(
+        currentSelectedIndex = remember { mutableIntStateOf(0) },
+        leftLazyListState = rememberLazyListState(),
+        rightLazyListState = rememberLazyListState()
+    )
+    val wechatTabConfig = WechatTabConfig(
+        currentSelectedTabIndex = remember { mutableIntStateOf(0) }
+    )
 
     val items = MainTabs.values()
     var currentSelected by remember { mutableStateOf(items[0]) }
@@ -110,13 +111,15 @@ fun MainScreen(
         Scaffold(
             modifier = modifier.fillMaxSize(),
             topBar = {
-                WanTopAppBar(
-                    title = currentSelected.title,
-                    navigationIcon = IconFont.Menu,
-                    onNavigationAction = {
-                        isOpenDrawer = true
-                    }
-                )
+                if (currentSelected == MainTabs.Main || currentSelected == MainTabs.Chapter || currentSelected == MainTabs.Nav) {
+                    WanTopAppBar(
+                        title = currentSelected.title,
+                        navigationIcon = IconFont.Menu,
+                        onNavigationAction = {
+                            isOpenDrawer = true
+                        }
+                    )
+                }
             },
             bottomBar = {
                 NavigationBar(
@@ -150,6 +153,8 @@ fun MainScreen(
                 MainTabs.Main -> {
                     HomeTab(
                         tab = MainTabs.Main,
+                        vm = vm,
+                        config = homeTabConfig,
                         modifier = Modifier.padding(values)
                     )
                 }
@@ -157,25 +162,32 @@ fun MainScreen(
                 MainTabs.Project -> {
                     ProjectTab(
                         tab = MainTabs.Project,
+                        vm = vm,
                         modifier = Modifier.padding(values)
                     )
                 }
                 MainTabs.Chapter -> {
                     ChapterTab(
                         tab = MainTabs.Chapter,
+                        vm = vm,
+                        config = chapterTabConfig,
                         modifier = Modifier.padding(values)
                     )
                 }
                 MainTabs.Nav -> {
-                    NavTab(
+                    NavigationTab(
                         tab = MainTabs.Nav,
-                        modifier = Modifier.padding(values)
+                        vm = vm,
+                        modifier = Modifier.padding(values),
+                        config = navigationTabConfig
                     )
                 }
                 MainTabs.WeChat -> {
                     WechatTab(
                         tab = MainTabs.WeChat,
-                        modifier = Modifier.padding(values)
+                        vm = vm,
+                        modifier = Modifier.padding(values),
+                        config = wechatTabConfig
                     )
                 }
             }
@@ -308,7 +320,8 @@ fun MainDrawer(
                 )
 
                 Spacer(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .height(1.dp)
                         .background(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f))
                 )

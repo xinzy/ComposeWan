@@ -253,7 +253,7 @@ internal class SwipeRefreshNestedScrollConnection(
 }
 
 @Composable
-private fun Arrow(
+fun Arrow(
     modifier: Modifier,
     color: Color = Color.Black
 ) {
@@ -285,7 +285,7 @@ private fun Arrow(
 }
 
 @Composable
-private fun Loading(
+fun Loading(
     modifier: Modifier,
     color: Color = Color.Black
 ) {

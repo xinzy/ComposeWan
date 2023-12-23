@@ -1,6 +1,5 @@
-package com.xinzy.compose.wan.ui.main.home
+package com.xinzy.compose.wan.ui.main
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,70 +8,62 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import coil.compose.rememberAsyncImagePainter
-import com.xinzy.compose.wan.ui.main.MainTabs
 import com.xinzy.compose.wan.ui.widget.ArticleItem
 import com.xinzy.compose.wan.ui.widget.Banner
-import com.xinzy.compose.wan.ui.widget.LoadingMoreLazyColumn
 import com.xinzy.compose.wan.ui.widget.SwipeRefresh
-import com.xinzy.compose.wan.ui.widget.TitleBar
-import com.xinzy.compose.wan.ui.widget.needLoadingMore
+import com.xinzy.compose.wan.ui.widget.createLoadingItem
+import com.xinzy.compose.wan.ui.widget.createRefreshItem
+import com.xinzy.compose.wan.ui.widget.isRefreshing
 import com.xinzy.compose.wan.util.L
+
+data class HomeTabConfig(
+    val lazyListState: LazyListState
+)
 
 @Composable
 fun HomeTab(
     tab: MainTabs,
-    modifier: Modifier = Modifier,
-    vm: HomeViewModel = viewModel()
+    vm: MainViewModel,
+    config: HomeTabConfig,
+    modifier: Modifier = Modifier
 ) {
-    var refreshing by remember {
-        mutableStateOf(false)
-    }
-
-    val viewState = vm.viewState
-    val isRefresh = viewState.isRefresh
-    val isLoadingMore = viewState.isLoadingMore
-    val isLoadEnd = viewState.isLoadEnd
-
-    val articles = viewState.articles
+    val homePagingItems = vm.homeArticle.collectAsLazyPagingItems()
+    val viewState = vm.homeViewState
     val banners = viewState.banners
 
-    refreshing = isRefresh
-
-    val lazyState = rememberLazyListState()
+    LaunchedEffect(key1 = Unit) {
+        vm.dispatch(MainEvent.LoadBanner)
+    }
 
     Column(
         modifier = modifier
     ) {
         SwipeRefresh(
-            isRefreshing = refreshing,
-            onRefresh = { vm.dispatch(HomeEvent.Refresh) }
+            isRefreshing = homePagingItems.isRefreshing,
+            onRefresh = {
+                L.d("home page refresh")
+                homePagingItems.refresh()
+            }
         ) {
 
-            LoadingMoreLazyColumn(
-                state = lazyState,
-                loadAction = {
-                    if (!isRefresh && !isLoadingMore && !isLoadEnd) {
-                        vm.dispatch(HomeEvent.LoadMore)
-                    }
-                }
+            LazyColumn(
+                state = config.lazyListState
             ) {
                 // 显示Banner
                 if (banners.isNotEmpty()) {
@@ -99,24 +90,26 @@ fun HomeTab(
                     }
                 }
 
-                items(articles) {
+                items(homePagingItems) { article ->
                     ArticleItem(
                         modifier = Modifier.clickable {
-                            println(it)
+                            println(article)
                         },
-                        article = it
+                        article = article!!
                     )
 
                     Divider(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(0.5.dp)
-                            .padding(horizontal = 16.dp),
+                            .height(0.5.dp),
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
-            }
 
+                createRefreshItem(homePagingItems)
+
+                createLoadingItem(homePagingItems)
+            }
         }
     }
 }
@@ -125,5 +118,9 @@ fun HomeTab(
 @Preview
 @Composable
 fun HomeTabPreview() {
-    HomeTab(tab = MainTabs.Main)
+    HomeTab(
+        tab = MainTabs.Main,
+        vm = viewModel(),
+        config = HomeTabConfig(lazyListState = rememberLazyListState())
+    )
 }

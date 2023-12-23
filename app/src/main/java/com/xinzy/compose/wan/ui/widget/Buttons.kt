@@ -25,14 +25,14 @@ import com.xinzy.compose.wan.util.IconFont
 @Composable
 fun CenteredButton(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onClick: () -> Unit = { },
     content: @Composable () -> Unit = { }
 ) {
+    val m = if (enabled) modifier.clickable { onClick() } else modifier
+
     Box(
-        modifier = modifier
-            .clickable {
-                onClick()
-            },
+        modifier = m,
         contentAlignment = Alignment.Center
     ) {
         content()
@@ -43,12 +43,14 @@ fun CenteredButton(
 fun IconFontButton(
     icon: IconFont,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onClick: () -> Unit = { },
     style: TextStyle = MaterialTheme.typography.titleMedium,
     color: Color = MaterialTheme.colorScheme.onBackground
 ) {
     CenteredButton(
         modifier = modifier,
+        enabled = enabled,
         onClick = onClick
     ) {
         IconFontText(

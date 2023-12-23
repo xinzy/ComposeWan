@@ -12,7 +12,11 @@ data class WanList<T>(
     val pageCount: Int = 0,
     val size: Int = 0,
     val total: Int = 0,
-    private val datas: List<T>? = null
+    val datas: List<T>
 ) {
-    fun getData() = datas ?: listOf()
+    val isFirstPage: Boolean get() = offset == 0
+    val isLastPage: Boolean get() = over
+
+    val prevPage: Int? get() = if (isFirstPage) null else page - 1
+    val nextPage: Int? get() = if (isLastPage) null else page + 1
 }

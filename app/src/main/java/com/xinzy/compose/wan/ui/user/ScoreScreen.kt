@@ -7,22 +7,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.xinzy.compose.wan.entity.ScoreRecord
-import com.xinzy.compose.wan.ui.widget.LoadingMoreLazyColumn
 import com.xinzy.compose.wan.ui.widget.SwipeRefresh
+import com.xinzy.compose.wan.ui.widget.createLoadingItem
+import com.xinzy.compose.wan.ui.widget.createRefreshItem
+import com.xinzy.compose.wan.ui.widget.isRefreshing
 import com.xinzy.compose.wan.util.L
 
 @Composable
@@ -31,48 +30,33 @@ fun ScoreScreen(
     activity: UserActivity?,
     modifier: Modifier = Modifier
 ) {
-    var isRefreshing by remember { mutableStateOf(false) }
-    var isFirstLoading by remember { mutableStateOf(true) }
+    val scoreRecordPager = vm.scoreRecordPager.collectAsLazyPagingItems()
 
-    val scoreRecordState = vm.scoreRecordState
-    val list = vm.scoreRecords
-
-    if (isFirstLoading) {
-        isFirstLoading = false
-        vm.dispatch(UserEvent.ScoreRecordRefresh)
-    }
-    isRefreshing = scoreRecordState.isLoading
-    val isLoading = scoreRecordState.isLoading || scoreRecordState.isLoadMore
-
-    L.d("isFirstLoading=$isFirstLoading, isRefreshing=$isRefreshing, scoreRecordState=$scoreRecordState")
+    L.d("state=${scoreRecordPager.loadState.refresh}")
 
     Column(
         modifier = modifier.fillMaxSize()
     ) {
         SwipeRefresh(
-            isRefreshing = isRefreshing,
+            isRefreshing = scoreRecordPager.isRefreshing,
             onRefresh = {
                 L.d("onRefresh")
-                if (!isLoading) {
-                    vm.dispatch(UserEvent.ScoreRecordRefresh)
-                }
+                scoreRecordPager.refresh()
             }
         ) {
-            LazyColumn(
-//                autoLoading = false,
-//                loadAction = {
-//                    L.d("on load more")
-//                    if (!vm.isScoreRecordLoadEnd && !isLoading) {
-//                        vm.dispatch(UserEvent.ScoreRecord)
-//                    }
-//                }
-            ) {
-                items(list) { record ->
-                    RecordItem(
-                        record = record,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+            LazyColumn {
+                items(scoreRecordPager) { record ->
+                    record?.let {
+                        RecordItem(
+                            record = record,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
+
+                createRefreshItem(scoreRecordPager)
+
+                createLoadingItem(scoreRecordPager)
             }
         }
     }

@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.xinzy.compose.wan.WanApplication
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.xinzy.compose.wan.entity.Score
-import com.xinzy.compose.wan.entity.ScoreRecord
 import com.xinzy.compose.wan.entity.User
 import kotlinx.coroutines.launch
 
@@ -17,13 +17,10 @@ class UserViewModel : ViewModel() {
 
     var scoreState by mutableStateOf(UserState.Success(Score()))
 
-    var scoreRecordState: UserState by mutableStateOf(UserState.Default)
-
-
-    val scoreRecords = mutableListOf<ScoreRecord>()
-    var isScoreRecordLoadEnd = false
-    private var scoreRecordPage = 1
-    private var isLoadingScoreRecord = false
+    val scoreRecordPager = Pager(
+        config = PagingConfig(pageSize = 20),
+        pagingSourceFactory = { ScorePagingSource() }
+    ).flow
 
     fun dispatch(event: UserEvent) {
         when (event) {
@@ -31,8 +28,6 @@ class UserViewModel : ViewModel() {
             is UserEvent.Register -> register(event.username, event.password, event.confirm)
             UserEvent.Logout -> logout()
             UserEvent.Score -> score()
-            UserEvent.ScoreRecordRefresh -> refreshScoreRecord()
-            UserEvent.ScoreRecord -> scoreRecord()
         }
     }
 
@@ -97,40 +92,6 @@ class UserViewModel : ViewModel() {
             score?.let {
                 scoreState = UserState.Success(data = it)
             }
-        }
-    }
-
-    private fun refreshScoreRecord() {
-        isScoreRecordLoadEnd = false
-        scoreRecordPage = 1
-        scoreRecord()
-    }
-
-    private fun scoreRecord() {
-        if (isScoreRecordLoadEnd) {
-            scoreRecordState = UserState.Failure("已加载全部数据")
-            return
-        }
-        if (isLoadingScoreRecord) return
-        isLoadingScoreRecord = true
-
-        scoreRecordState = if (scoreRecordPage == 1) UserState.Loading else UserState.LoadMore
-
-        viewModelScope.launch {
-            val result = UserRepository.scoreList(scoreRecordPage)
-            scoreRecordState = if (result.isSuccess) {
-                val list = result.data!!
-                if (scoreRecordPage == 1) {
-                    scoreRecords.clear()
-                }
-                scoreRecords.addAll(list.getData())
-                isScoreRecordLoadEnd = list.over
-                scoreRecordPage = list.page
-                UserState.Success(scoreRecords)
-            } else {
-                UserState.Failure(result.message)
-            }
-            isLoadingScoreRecord = false
         }
     }
 }

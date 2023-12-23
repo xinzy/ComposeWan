@@ -7,6 +7,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
+val LazyListState.needLoadingMore: Boolean
+    get() = !isScrollInProgress && !canScrollForward
+
 @Composable
 fun LoadingMoreLazyColumn(
     modifier: Modifier = Modifier,

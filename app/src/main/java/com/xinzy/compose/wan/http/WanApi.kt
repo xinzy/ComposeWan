@@ -6,6 +6,7 @@ import com.xinzy.compose.wan.entity.ApiResult
 import com.xinzy.compose.wan.entity.Article
 import com.xinzy.compose.wan.entity.Banner
 import com.xinzy.compose.wan.entity.Chapter
+import com.xinzy.compose.wan.entity.Navigation
 import com.xinzy.compose.wan.entity.Score
 import com.xinzy.compose.wan.entity.ScoreRecord
 import com.xinzy.compose.wan.entity.User
@@ -24,6 +25,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 import java.io.File
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
@@ -53,8 +55,32 @@ interface WanApi {
     @GET("/tree/json")
     suspend fun chapter(): HttpResult<ApiResult<List<Chapter>>>
 
+    /** 导航数据 */
+    @GET("/navi/json")
+    suspend fun navigation(): HttpResult<ApiResult<List<Navigation>>>
 
+    /** 知识体系下的文章列表  */
+    @GET("/article/list/{page}/json")
+    suspend fun topicByChapterId(@Path("page") page: Int, @Query("cid") cid: Int)
+            : HttpResult<ApiResult<WanList<Article>>>
 
+    /** 微信公众号列表  */
+    @GET("/wxarticle/chapters/json")
+    suspend fun weixin(): HttpResult<ApiResult<List<Chapter>>>
+
+    /** 知识体系下的文章列表  */
+    @GET("/wxarticle/list/{cid}/{page}/json")
+    suspend fun wechatArticleList(@Path("page") page: Int, @Path("cid") cid: Int,
+                      @Query("k") keyword: String?): HttpResult<ApiResult<WanList<Article>>>
+
+    /** 项目分类列表  */
+    @GET("/project/tree/json")
+    suspend fun project(): HttpResult<ApiResult<List<Chapter>>>
+
+    /** 项目分类下的文章列表 */
+    @GET("/project/list/{page}/json")
+    suspend fun projectArticleList(@Path("page") page: Int, @Query("cid") cid: Int)
+            : HttpResult<ApiResult<WanList<Article>>>
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // 用户模块
@@ -95,7 +121,7 @@ interface WanApi {
         fun api(): WanApi {
             return api ?: kotlin.run {
                 val logging = HttpLoggingInterceptor(WanLogger())
-                logging.level = HttpLoggingInterceptor.Level.BODY
+                logging.level = HttpLoggingInterceptor.Level.BASIC
 
                 val okHttpClient = OkHttpClient.Builder()
                     .connectTimeout(5, TimeUnit.SECONDS)

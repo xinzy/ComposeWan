@@ -17,7 +17,4 @@ sealed class UserEvent {
 
     object Score: UserEvent()
 
-    object ScoreRecordRefresh: UserEvent()
-
-    object ScoreRecord: UserEvent()
 }
