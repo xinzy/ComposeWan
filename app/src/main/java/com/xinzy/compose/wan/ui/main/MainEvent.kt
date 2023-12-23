@@ -9,6 +9,8 @@ sealed class MainEvent {
 
     object LoadWechatChapter : MainEvent()
 
+    object LoadProjectChapter : MainEvent()
+
     data class UpdateWechatKeyword(
         val cid: Int,
         val keyword: String

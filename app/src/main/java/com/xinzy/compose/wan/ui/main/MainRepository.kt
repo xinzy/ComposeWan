@@ -109,4 +109,15 @@ object MainRepository {
             }
         }
     }
+
+    suspend fun projectArticle(cid: Int, page: Int): ApiResult<WanList<Article>> {
+        return when (val result = WanApi.api().projectArticleList(page, cid)) {
+            is HttpResult.Failure -> {
+                ApiResult(result.code, result.msg)
+            }
+            is HttpResult.Success -> {
+                result.data
+            }
+        }
+    }
 }

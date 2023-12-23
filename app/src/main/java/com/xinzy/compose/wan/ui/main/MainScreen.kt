@@ -1,6 +1,7 @@
 package com.xinzy.compose.wan.ui.main
 
 import android.content.Context
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -61,7 +62,13 @@ fun MainScreen(
         leftLazyListState = rememberLazyListState(),
         rightLazyListState = rememberLazyListState()
     )
+
+    @OptIn(ExperimentalFoundationApi::class)
     val wechatTabConfig = WechatTabConfig(
+        currentSelectedTabIndex = remember { mutableIntStateOf(0) }
+    )
+    @OptIn(ExperimentalFoundationApi::class)
+    val projectTabConfig = ProjectTabConfig(
         currentSelectedTabIndex = remember { mutableIntStateOf(0) }
     )
 
@@ -163,6 +170,7 @@ fun MainScreen(
                     ProjectTab(
                         tab = MainTabs.Project,
                         vm = vm,
+                        config = projectTabConfig,
                         modifier = Modifier.padding(values)
                     )
                 }

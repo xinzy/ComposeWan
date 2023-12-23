@@ -1,7 +1,5 @@
 package com.xinzy.compose.wan.ui.widget
 
-import android.content.Context
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,28 +14,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xinzy.compose.wan.entity.Article
 import com.xinzy.compose.wan.ui.theme.Typography
-import com.xinzy.compose.wan.ui.web.WebViewActivity
 import com.xinzy.compose.wan.util.IconFont
 
 @Composable
 fun ArticleItem(
     article: Article,
-    modifier: Modifier = Modifier,
-    context: Context = LocalContext.current
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clickable {
-                val url = article.link
-                WebViewActivity.start(context, url)
-            }
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
         Row(

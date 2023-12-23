@@ -48,13 +48,20 @@ class MainViewModel : ViewModel() {
     /** 项目分类数据 */
     var projectViewState by mutableStateOf(SingleState<List<Chapter>>(data = emptyList()))
 
+    private val projectPagers = hashMapOf<Int, Flow<PagingData<Article>>>()
+    fun getProjectPager(cid: Int): Flow<PagingData<Article>> = projectPagers[cid] ?: Pager(config = PagingConfig(pageSize = 20), pagingSourceFactory = { ProjectPagingSource(cid) })
+        .flow
+        .cachedIn(viewModelScope)
+        .also { projectPagers[cid] = it }
+
     fun dispatch(event: MainEvent) {
         when (event) {
             MainEvent.LoadBanner -> loadBanner()
             MainEvent.LoadChapter -> loadChapter()
             MainEvent.LoadNavigationChapter -> loadNav()
-            MainEvent.LoadWechatChapter -> loadWechat()
+            MainEvent.LoadWechatChapter -> loadWechatChapter()
             is MainEvent.UpdateWechatKeyword -> updateWechatKeyword(event)
+            MainEvent.LoadProjectChapter -> loadProjectChapter()
         }
     }
 
@@ -86,7 +93,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private fun loadWechat() {
+    private fun loadWechatChapter() {
         if (wechatViewState.isLoaded) return
 
         wechatViewState = wechatViewState.copy(refreshing = true)
@@ -98,5 +105,15 @@ class MainViewModel : ViewModel() {
 
     private fun updateWechatKeyword(data: MainEvent.UpdateWechatKeyword) {
         wechatKeywords[data.cid] = data.keyword
+    }
+
+    private fun loadProjectChapter() {
+        if (projectViewState.isLoaded) return
+
+        projectViewState = projectViewState.copy(refreshing = true)
+        viewModelScope.launch {
+            val list = MainRepository.project()
+            projectViewState = projectViewState.copy(isLoaded = list.isNotEmpty(), refreshing = false, data = list)
+        }
     }
 }
