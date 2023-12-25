@@ -2,6 +2,7 @@ package com.xinzy.compose.wan.ui.user
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.xinzy.compose.wan.entity.Rank
 import com.xinzy.compose.wan.entity.ScoreRecord
 import com.xinzy.compose.wan.http.WanHttpException
 
@@ -14,6 +15,28 @@ class ScorePagingSource : PagingSource<Int, ScoreRecord>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ScoreRecord> {
         val page = params.key ?: 1
         val result = UserRepository.scoreList(page)
+
+        return if (result.isSuccess) {
+            val list = result.data!!
+            LoadResult.Page(
+                data = list.datas,
+                prevKey = list.prevPage,
+                nextKey = list.nextPage
+            )
+        } else {
+            LoadResult.Error(WanHttpException(result.code, result.message))
+        }
+    }
+}
+
+class RankPagingSource : PagingSource<Int, Rank>() {
+    override fun getRefreshKey(state: PagingState<Int, Rank>): Int? {
+        return null
+    }
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Rank> {
+        val page = params.key ?: 1
+        val result = UserRepository.rank(page)
 
         return if (result.isSuccess) {
             val list = result.data!!

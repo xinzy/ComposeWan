@@ -71,4 +71,9 @@ object WanColors {
     val transparent = Color(0x00000000)
 
     val translucent = Color(0x20000000)
+
+    val gold = Color(red = 234, green = 199, blue = 135)
+    val silver = Color(red = 233, green = 233, blue = 216)
+    val copper = Color(red = 186, green = 110, blue = 64)
+
 }

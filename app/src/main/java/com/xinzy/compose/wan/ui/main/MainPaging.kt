@@ -34,7 +34,7 @@ class HomePagingSource : PagingSource<Int, Article>() {
                 LoadResult.Page(
                     data = top,
                     prevKey = null,
-                    nextKey = page
+                    nextKey = null
                 )
             }
         }

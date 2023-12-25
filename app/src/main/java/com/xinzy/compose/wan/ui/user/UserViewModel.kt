@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.xinzy.compose.wan.entity.Score
 import com.xinzy.compose.wan.entity.User
 import kotlinx.coroutines.launch
@@ -20,7 +21,12 @@ class UserViewModel : ViewModel() {
     val scoreRecordPager = Pager(
         config = PagingConfig(pageSize = 20),
         pagingSourceFactory = { ScorePagingSource() }
-    ).flow
+    ).flow.cachedIn(viewModelScope)
+
+    val rankPager = Pager(
+        config = PagingConfig(pageSize = 20),
+        pagingSourceFactory = { RankPagingSource() }
+    ).flow.cachedIn(viewModelScope)
 
     fun dispatch(event: UserEvent) {
         when (event) {

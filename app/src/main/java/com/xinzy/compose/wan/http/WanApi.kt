@@ -7,6 +7,7 @@ import com.xinzy.compose.wan.entity.Article
 import com.xinzy.compose.wan.entity.Banner
 import com.xinzy.compose.wan.entity.Chapter
 import com.xinzy.compose.wan.entity.Navigation
+import com.xinzy.compose.wan.entity.Rank
 import com.xinzy.compose.wan.entity.Score
 import com.xinzy.compose.wan.entity.ScoreRecord
 import com.xinzy.compose.wan.entity.User
@@ -112,8 +113,18 @@ interface WanApi {
     @GET("/lg/coin/userinfo/json")
     suspend fun coin(): HttpResult<ApiResult<Score>>
 
+    /**
+     * 积分记录
+     */
     @GET("/lg/coin/list/{page}/json")
     suspend fun coinList(@Path("page") page: Int): HttpResult<ApiResult<WanList<ScoreRecord>>>
+
+    /**
+     * 积分排行
+     */
+    @GET("/coin/rank/{page}/json")
+    suspend fun rank(@Path("page") page: Int): HttpResult<ApiResult<WanList<Rank>>>
+
 
     companion object {
         private var api: WanApi? = null

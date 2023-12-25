@@ -97,13 +97,14 @@ fun UserScreen(
             }
 
             UserUiType.Rank -> {
-
+                RankScreen(
+                    vm = vm
+                )
             }
 
             UserUiType.Score -> {
                 ScoreScreen(
-                    vm = vm,
-                    activity = activity
+                    vm = vm
                 )
             }
         }

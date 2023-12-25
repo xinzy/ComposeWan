@@ -27,7 +27,6 @@ import com.xinzy.compose.wan.util.L
 @Composable
 fun ScoreScreen(
     vm: UserViewModel,
-    activity: UserActivity?,
     modifier: Modifier = Modifier
 ) {
     val scoreRecordPager = vm.scoreRecordPager.collectAsLazyPagingItems()
