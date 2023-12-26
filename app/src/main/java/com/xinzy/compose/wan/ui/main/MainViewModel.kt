@@ -12,6 +12,7 @@ import androidx.paging.cachedIn
 import com.xinzy.compose.wan.entity.Article
 import com.xinzy.compose.wan.entity.Chapter
 import com.xinzy.compose.wan.entity.Navigation
+import com.xinzy.compose.wan.http.WanRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -68,7 +69,7 @@ class MainViewModel : ViewModel() {
     private fun loadBanner() {
         if (homeViewState.isLoaded) return
         viewModelScope.launch {
-            val banner = MainRepository.banner()
+            val banner = WanRepository.banner()
             homeViewState = homeViewState.copy(isLoaded = banner.isNotEmpty(), banners = banner)
         }
     }
@@ -78,7 +79,7 @@ class MainViewModel : ViewModel() {
 
         chapterViewState = chapterViewState.copy(refreshing = true)
         viewModelScope.launch {
-            val list = MainRepository.chapters()
+            val list = WanRepository.chapters()
             chapterViewState = chapterViewState.copy(isLoaded = list.isNotEmpty(), refreshing = false, data = list)
         }
     }
@@ -88,7 +89,7 @@ class MainViewModel : ViewModel() {
 
         navigationViewState = navigationViewState.copy(refreshing = true)
         viewModelScope.launch {
-            val list = MainRepository.navigation()
+            val list = WanRepository.navigation()
             navigationViewState = navigationViewState.copy(isLoaded = list.isNotEmpty(), refreshing = false, data = list)
         }
     }
@@ -98,7 +99,7 @@ class MainViewModel : ViewModel() {
 
         wechatViewState = wechatViewState.copy(refreshing = true)
         viewModelScope.launch {
-            val list = MainRepository.wechat()
+            val list = WanRepository.wechat()
             wechatViewState = wechatViewState.copy(isLoaded = list.isNotEmpty(), refreshing = false, data = list)
         }
     }
@@ -112,7 +113,7 @@ class MainViewModel : ViewModel() {
 
         projectViewState = projectViewState.copy(refreshing = true)
         viewModelScope.launch {
-            val list = MainRepository.project()
+            val list = WanRepository.project()
             projectViewState = projectViewState.copy(isLoaded = list.isNotEmpty(), refreshing = false, data = list)
         }
     }

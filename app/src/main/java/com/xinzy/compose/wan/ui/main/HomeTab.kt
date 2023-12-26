@@ -96,7 +96,9 @@ fun HomeTab(
                             println(article)
                         },
                         article = article!!
-                    )
+                    ) { art, collect ->
+
+                    }
 
                     Divider(
                         modifier = Modifier

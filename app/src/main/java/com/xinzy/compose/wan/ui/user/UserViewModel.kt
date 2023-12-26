@@ -10,6 +10,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.xinzy.compose.wan.entity.Score
 import com.xinzy.compose.wan.entity.User
+import com.xinzy.compose.wan.http.WanRepository
 import kotlinx.coroutines.launch
 
 class UserViewModel : ViewModel() {
@@ -48,7 +49,7 @@ class UserViewModel : ViewModel() {
         }
         userState = UserState.Loading
         viewModelScope.launch {
-            val result = UserRepository.login(username, password)
+            val result = WanRepository.login(username, password)
             result.first?.let {
                 User.me().login(it)
                 User.me().save()
@@ -74,7 +75,7 @@ class UserViewModel : ViewModel() {
         }
         userState = UserState.Loading
         viewModelScope.launch {
-            val result = UserRepository.register(username, password, password)
+            val result = WanRepository.register(username, password, password)
             result.first?.let {
                 User.me().login(it)
                 User.me().save()
@@ -87,14 +88,14 @@ class UserViewModel : ViewModel() {
 
     private fun logout() {
         viewModelScope.launch {
-            UserRepository.logout()
+            WanRepository.logout()
             User.me().logout()
         }
     }
 
     private fun score() {
         viewModelScope.launch {
-            val score = UserRepository.score()
+            val score = WanRepository.score()
             score?.let {
                 scoreState = UserState.Success(data = it)
             }

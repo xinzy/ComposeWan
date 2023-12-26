@@ -3,6 +3,7 @@ package com.xinzy.compose.wan.ui.main
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.xinzy.compose.wan.entity.Article
+import com.xinzy.compose.wan.http.WanRepository
 import com.xinzy.compose.wan.http.toException
 
 
@@ -15,11 +16,11 @@ class HomePagingSource : PagingSource<Int, Article>() {
         val page = params.key ?: 0
 
         val top = if (page == 0) {
-            MainRepository.top()
+            WanRepository.top()
         } else {
             null
         }
-        val homeArticle = MainRepository.homeArticle(page)
+        val homeArticle = WanRepository.homeArticle(page)
         return if (homeArticle.isSuccess) {
             val list = homeArticle.data!!
             LoadResult.Page(
@@ -52,7 +53,7 @@ class WechatPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         val page = params.key ?: 1
-        val result = MainRepository.wechatArticle(cid, page, keyword)
+        val result = WanRepository.wechatArticle(cid, page, keyword)
 
         return if (result.isSuccess) {
             val list = result.data!!
@@ -75,7 +76,7 @@ class ProjectPagingSource(private val cid: Int) : PagingSource<Int, Article>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         val page = params.key ?: 1
-        val result = MainRepository.projectArticle(cid, page)
+        val result = WanRepository.projectArticle(cid, page)
         return if (result.isSuccess) {
             val list = result.data!!
             LoadResult.Page(
