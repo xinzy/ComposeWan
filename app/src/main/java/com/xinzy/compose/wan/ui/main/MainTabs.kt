@@ -6,7 +6,7 @@ import com.xinzy.compose.wan.util.IconFont
 
 enum class MainTabs(val title: String, val icon: Int) {
     Main("主页", R.drawable.ic_navigation_main),
-    WeChat("微信", R.drawable.ic_navigation_weixin),
+    WeChat("公众号", R.drawable.ic_navigation_weixin),
     Chapter("分类", R.drawable.ic_navigation_chapter),
     Project("项目", R.drawable.ic_navigation_project),
     Nav("导航", R.drawable.ic_navigation_nav),

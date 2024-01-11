@@ -10,15 +10,16 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import com.xinzy.compose.wan.util.ToastUtil
 
 
 @Composable
 fun ShowToast(
     msg: String,
     context: Context = LocalContext.current,
-    length: Int = Toast.LENGTH_LONG
+    length: Int = Toast.LENGTH_SHORT
 ) {
-    Toast.makeText(context, msg, length).show()
+    ToastUtil.show(msg, length)
 }
 
 @OptIn(ExperimentalComposeUiApi::class)

@@ -5,6 +5,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.xinzy.compose.wan.util.L
 
+const val LoadingContentType = "ContentLoading"
 
 val <T: Any> LazyPagingItems<T>.isRefreshing: Boolean get() = this.loadState.refresh == LoadState.Loading
 val <T: Any> LazyPagingItems<T>.isLoading: Boolean get() = this.loadState.append == LoadState.Loading
@@ -15,7 +16,9 @@ fun <T: Any> LazyListScope.createRefreshItem(items: LazyPagingItems<T>) {
             L.d("refresh fail ${state.error.message}")
         }
         LoadState.Loading -> {
-            item {
+            item(
+                contentType = LoadingContentType
+            ) {
                 LoadingItem()
             }
         }
@@ -31,7 +34,9 @@ fun <T: Any> LazyListScope.createLoadingItem(items: LazyPagingItems<T>) {
             L.d("refresh fail ${state.error.message}")
         }
         LoadState.Loading -> {
-            item {
+            item(
+                contentType = LoadingContentType
+            ) {
                 LoadingItem()
             }
         }

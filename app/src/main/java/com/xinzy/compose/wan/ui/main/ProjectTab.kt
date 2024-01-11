@@ -1,8 +1,9 @@
 package com.xinzy.compose.wan.ui.main
 
+import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,12 +37,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import com.xinzy.compose.wan.entity.Article
 import com.xinzy.compose.wan.entity.Chapter
+import com.xinzy.compose.wan.entity.User
 import com.xinzy.compose.wan.ui.theme.Typography
+import com.xinzy.compose.wan.ui.web.WebViewActivity
+import com.xinzy.compose.wan.ui.widget.IconFontButton
 import com.xinzy.compose.wan.ui.widget.IconFontText
 import com.xinzy.compose.wan.ui.widget.ProgressDialog
+import com.xinzy.compose.wan.ui.widget.ShowToast
 import com.xinzy.compose.wan.ui.widget.SwipeRefresh
 import com.xinzy.compose.wan.ui.widget.createLoadingItem
 import com.xinzy.compose.wan.ui.widget.createRefreshItem
@@ -72,16 +77,23 @@ data class ProjectTabConfig(
     }
 }
 
+fun interface OnProjectCollectCallback {
+    fun onArticleCollect(article: Article, collect: Boolean)
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProjectTab(
     tab: MainTabs,
     vm: MainViewModel,
+    context: Context,
     config: ProjectTabConfig,
     modifier: Modifier = Modifier
 ) {
     val viewState = vm.projectViewState
+    val collectState = vm.projectCollectState
 
+    val isLogin = User.me().isLogin
     val pageState: PagerState = config.getPageState(count = viewState.data.size)
     var clickedTabIndex by remember { mutableIntStateOf(config.currentSelectedTabIndex.intValue) }
 
@@ -101,6 +113,12 @@ fun ProjectTab(
         if (pageState.targetPage != config.currentSelectedTabIndex.intValue) {
             config.currentSelectedTabIndex.intValue = pageState.targetPage
         }
+    }
+
+    collectState?.let {
+        ShowToast(
+            msg = it.message
+        )
     }
 
     Box(
@@ -140,7 +158,9 @@ fun ProjectTab(
                 ) { index ->
                     ProjectPageItem(
                         vm = vm,
+                        context = context,
                         modifier = Modifier.fillMaxSize(),
+                        isLogin = isLogin,
                         index = index,
                         chapter = viewState.data[index],
                         lazyListState = config.getItemListState(index = index)
@@ -157,7 +177,9 @@ fun ProjectTab(
 @Composable
 private fun ProjectPageItem(
     vm: MainViewModel,
+    context: Context,
     modifier: Modifier = Modifier,
+    isLogin: Boolean,
     index: Int,
     chapter: Chapter,
     lazyListState: LazyListState
@@ -177,7 +199,14 @@ private fun ProjectPageItem(
         ) {
             items(projectPagingItems) { article ->
                 ProjectItem(
-                    article = article!!
+                    article = article!!,
+                    showCollect = isLogin,
+                    clickAction = {
+                        WebViewActivity.start(context, article.link)
+                    },
+                    callback = { art, collect ->
+                        vm.dispatch(MainEvent.Collect(art, collect, CollectSource.Project))
+                    }
                 )
 
                 Spacer(
@@ -198,16 +227,42 @@ private fun ProjectPageItem(
 @Composable
 private fun ProjectItem(
     article: Article,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showCollect: Boolean,
+    clickAction: (() -> Unit)? = null,
+    callback: OnProjectCollectCallback? = null
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .clickable { clickAction?.invoke() }
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Image(
-            painter = rememberAsyncImagePainter(model = article.cover),
+        if (showCollect) {
+
+            Box(
+                modifier = Modifier
+                    .width(18.dp)
+                    .height(18.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                IconFontButton(
+                    icon = if (article.collect) IconFont.Favor else IconFont.UnFavor,
+                    onClick = {
+                        callback?.onArticleCollect(article, !article.collect)
+                    },
+                    style = MaterialTheme.typography.titleMedium,
+                    color = if (article.collect) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground
+                )
+            }
+
+            Spacer(modifier = modifier.width(12.dp))
+        }
+
+        AsyncImage(
+            model = article.cover,
             contentDescription = article.title,
             modifier = Modifier
                 .height(144.dp)
@@ -232,7 +287,8 @@ private fun ProjectItem(
                 )
 
                 Text(
-                    modifier = Modifier.width(72.dp)
+                    modifier = Modifier
+                        .width(72.dp)
                         .padding(start = 4.dp),
                     text = article.displayAuthor,
                     color = MaterialTheme.colorScheme.onBackground,

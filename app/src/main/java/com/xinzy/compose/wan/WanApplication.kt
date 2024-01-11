@@ -2,6 +2,7 @@ package com.xinzy.compose.wan
 
 import android.app.Application
 import com.xinzy.compose.wan.entity.User
+import com.xinzy.compose.wan.util.ToastUtil
 
 class WanApplication : Application() {
 
@@ -9,6 +10,7 @@ class WanApplication : Application() {
         super.onCreate()
 
         instance = this
+        ToastUtil.init(this)
         User.me().load()
     }
 

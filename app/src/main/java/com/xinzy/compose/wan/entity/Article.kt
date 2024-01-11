@@ -25,7 +25,7 @@ data class Article(
     val cover: String = "",
 
     val courseId: Int = 0,
-    val collect: Boolean = false,
+    var collect: Boolean = false,
     val fresh: Boolean = false,
     val publishTime: Long = 0,
     val type: Int = 0,

@@ -1,7 +1,6 @@
 package com.xinzy.compose.wan.ui.main
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -18,14 +16,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
+import com.xinzy.compose.wan.entity.User
+import com.xinzy.compose.wan.ui.web.WebViewActivity
 import com.xinzy.compose.wan.ui.widget.ArticleItem
 import com.xinzy.compose.wan.ui.widget.Banner
+import com.xinzy.compose.wan.ui.widget.BannerContentType
+import com.xinzy.compose.wan.ui.widget.ShowToast
 import com.xinzy.compose.wan.ui.widget.SwipeRefresh
 import com.xinzy.compose.wan.ui.widget.createLoadingItem
 import com.xinzy.compose.wan.ui.widget.createRefreshItem
@@ -41,11 +41,23 @@ fun HomeTab(
     tab: MainTabs,
     vm: MainViewModel,
     config: HomeTabConfig,
+    context: Context,
     modifier: Modifier = Modifier
 ) {
     val homePagingItems = vm.homeArticle.collectAsLazyPagingItems()
     val viewState = vm.homeViewState
     val banners = viewState.banners
+
+    val collectState = vm.homeCollectState
+
+    val isLogin = User.me().isLogin
+
+    collectState?.let {
+        ShowToast(
+            msg = it.message,
+            context = context
+        )
+    }
 
     LaunchedEffect(key1 = Unit) {
         vm.dispatch(MainEvent.LoadBanner)
@@ -68,7 +80,9 @@ fun HomeTab(
                 // 显示Banner
                 if (banners.isNotEmpty()) {
 
-                    item {
+                    item(
+                        contentType = BannerContentType
+                    ) {
                         Banner(
                             items = banners,
                             modifier = Modifier
@@ -79,9 +93,9 @@ fun HomeTab(
                                 modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.BottomCenter
                             ) {
-                                Image(
+                                AsyncImage(
                                     modifier = Modifier.fillMaxSize(),
-                                    painter = rememberAsyncImagePainter(model = item.imagePath),
+                                    model = item.imagePath,
                                     contentDescription = item.title,
                                     contentScale = ContentScale.FillBounds
                                 )
@@ -90,14 +104,18 @@ fun HomeTab(
                     }
                 }
 
-                items(homePagingItems) { article ->
+                items(
+                    items = homePagingItems,
+                    key = { item -> item.id }
+                ) { article ->
                     ArticleItem(
-                        modifier = Modifier.clickable {
-                            println(article)
+                        article = article!!,
+                        clickAction = {
+                            WebViewActivity.start(context, article.link)
                         },
-                        article = article!!
+                        showCollect = isLogin
                     ) { art, collect ->
-
+                        vm.dispatch(MainEvent.Collect(art, collect, CollectSource.Home))
                     }
 
                     Divider(
@@ -114,15 +132,4 @@ fun HomeTab(
             }
         }
     }
-}
-
-
-@Preview
-@Composable
-fun HomeTabPreview() {
-    HomeTab(
-        tab = MainTabs.Main,
-        vm = viewModel(),
-        config = HomeTabConfig(lazyListState = rememberLazyListState())
-    )
 }

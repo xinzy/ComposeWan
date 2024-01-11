@@ -127,6 +127,28 @@ interface WanApi {
     @GET("/coin/rank/{page}/json")
     suspend fun rank(@Path("page") page: Int): HttpResult<ApiResult<WanList<Rank>>>
 
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // 收藏
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 文章列表收藏
+     */
+    @POST("/lg/collect/{id}/json")
+    suspend fun collect(@Path("id") id: Int): HttpResult<ApiResult<Any?>>
+
+    /**
+     * 文章列表取消收藏
+     */
+    @POST("/lg/uncollect_originId/{id}/json")
+    suspend fun uncollectOrigin(@Path("id") id: Int): HttpResult<ApiResult<Any?>>
+
+    /**
+     * 我的收藏列表取消收藏
+     */
+    @POST("/lg/uncollect/{id}/json")
+    @FormUrlEncoded
+    suspend fun uncollect(@Path("id") id: Int, @Field("originId") originId: Int): HttpResult<ApiResult<Any?>>
 
     companion object {
         private var api: WanApi? = null

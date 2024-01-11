@@ -18,7 +18,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             ComposeWanTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    MainScreen()
+                    MainScreen(
+                        activity = this
+                    )
                 }
             }
         }

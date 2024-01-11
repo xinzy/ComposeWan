@@ -27,6 +27,8 @@ class MainViewModel : ViewModel() {
     /** 首页状态 */
     var homeViewState by mutableStateOf(HomeState())
 
+    var homeCollectState: FavorState? by mutableStateOf(null)
+
     /** 分类数据 */
     var chapterViewState by mutableStateOf(SingleState<List<Chapter>>(data = emptyList()))
 
@@ -35,6 +37,8 @@ class MainViewModel : ViewModel() {
 
     /** 微信分类数据 */
     var wechatViewState by mutableStateOf(SingleState<List<Chapter>>(data = emptyList()))
+
+    var wechatCollectState: FavorState? by mutableStateOf(null)
 
     private val wechatKeywords = hashMapOf<Int, String>()
     fun getWechatKeyword(cid: Int): String = wechatKeywords[cid] ?: ""
@@ -48,6 +52,7 @@ class MainViewModel : ViewModel() {
 
     /** 项目分类数据 */
     var projectViewState by mutableStateOf(SingleState<List<Chapter>>(data = emptyList()))
+    var projectCollectState: FavorState? by mutableStateOf(null)
 
     private val projectPagers = hashMapOf<Int, Flow<PagingData<Article>>>()
     fun getProjectPager(cid: Int): Flow<PagingData<Article>> = projectPagers[cid] ?: Pager(config = PagingConfig(pageSize = 20), pagingSourceFactory = { ProjectPagingSource(cid) })
@@ -63,6 +68,7 @@ class MainViewModel : ViewModel() {
             MainEvent.LoadWechatChapter -> loadWechatChapter()
             is MainEvent.UpdateWechatKeyword -> updateWechatKeyword(event)
             MainEvent.LoadProjectChapter -> loadProjectChapter()
+            is MainEvent.Collect -> collect(event)
         }
     }
 
@@ -115,6 +121,44 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             val list = WanRepository.project()
             projectViewState = projectViewState.copy(isLoaded = list.isNotEmpty(), refreshing = false, data = list)
+        }
+    }
+
+    private fun collect(data: MainEvent.Collect) {
+        viewModelScope.launch {
+            val result = if (data.collect) {
+                WanRepository.collect(data.article.id)
+            } else {
+                WanRepository.uncollectOrigin(data.article.id)
+            }
+            val state = if (result.isSuccess) {
+                data.article.collect = data.collect
+                FavorState(
+                    article = data.article,
+                    collect = data.collect,
+                    success = true,
+                    message = "${if (data.collect) "收藏" else "取消收藏" }成功"
+                )
+            } else {
+                FavorState(
+                    article = data.article,
+                    collect = data.collect,
+                    success = false,
+                    message = result.message
+                )
+            }
+
+            when (data.source) {
+                CollectSource.Home -> {
+                    homeCollectState = state
+                }
+                CollectSource.Wechat -> {
+                    wechatCollectState = state
+                }
+                CollectSource.Project -> {
+                    projectCollectState = state
+                }
+            }
         }
     }
 }

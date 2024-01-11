@@ -11,6 +11,10 @@ import com.xinzy.compose.wan.entity.ScoreRecord
 import com.xinzy.compose.wan.entity.User
 import com.xinzy.compose.wan.entity.WanList
 import com.xinzy.compose.wan.util.L
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.POST
+import retrofit2.http.Path
 
 object WanRepository {
 
@@ -194,6 +198,41 @@ object WanRepository {
             is HttpResult.Success -> {
                 result.data
             }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////
+    // 收藏
+    /////////////////////////////////////////////////////////////////
+
+
+    /**
+     * 文章列表收藏
+     */
+    suspend fun collect(id: Int): ApiResult<Any?> {
+        return when (val result = WanApi.api().collect(id)) {
+            is HttpResult.Failure -> ApiResult(result.code, result.msg)
+            is HttpResult.Success -> result.data
+        }
+    }
+
+    /**
+     * 文章列表取消收藏
+     */
+    suspend fun uncollectOrigin(id: Int): ApiResult<Any?> {
+        return when (val result = WanApi.api().uncollectOrigin(id)) {
+            is HttpResult.Failure -> ApiResult(result.code, result.msg)
+            is HttpResult.Success -> result.data
+        }
+    }
+
+    /**
+     * 我的收藏列表取消收藏
+     */
+    suspend fun uncollect(id: Int, originId: Int = -1): ApiResult<Any?> {
+        return when (val result = WanApi.api().uncollect(id, originId)) {
+            is HttpResult.Failure -> ApiResult(result.code, result.msg)
+            is HttpResult.Success -> result.data
         }
     }
 }

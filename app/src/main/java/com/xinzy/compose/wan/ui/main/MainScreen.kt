@@ -1,5 +1,6 @@
 package com.xinzy.compose.wan.ui.main
 
+import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -53,7 +54,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
-    vm: MainViewModel = viewModel()
+    vm: MainViewModel = viewModel(),
+    activity: Activity
 ) {
     val homeTabConfig = HomeTabConfig(lazyListState = rememberLazyListState())
     val chapterTabConfig = ChapterTabConfig(lazyListState = rememberLazyListState())
@@ -162,6 +164,7 @@ fun MainScreen(
                         tab = MainTabs.Main,
                         vm = vm,
                         config = homeTabConfig,
+                        context = activity,
                         modifier = Modifier.padding(values)
                     )
                 }
@@ -170,6 +173,7 @@ fun MainScreen(
                     ProjectTab(
                         tab = MainTabs.Project,
                         vm = vm,
+                        context = activity,
                         config = projectTabConfig,
                         modifier = Modifier.padding(values)
                     )
@@ -194,6 +198,7 @@ fun MainScreen(
                     WechatTab(
                         tab = MainTabs.WeChat,
                         vm = vm,
+                        context = activity,
                         modifier = Modifier.padding(values),
                         config = wechatTabConfig
                     )
@@ -342,10 +347,4 @@ fun MainDrawer(
 @Preview
 fun MainDrawerPreview() {
     MainDrawer()
-}
-
-//@Preview
-@Composable
-fun MainScreenPreview() {
-    MainScreen()
 }

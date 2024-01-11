@@ -1,5 +1,6 @@
 package com.xinzy.compose.wan.ui.main
 
+import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -38,9 +39,12 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.xinzy.compose.wan.entity.Chapter
+import com.xinzy.compose.wan.entity.User
+import com.xinzy.compose.wan.ui.web.WebViewActivity
 import com.xinzy.compose.wan.ui.widget.ArticleItem
 import com.xinzy.compose.wan.ui.widget.EditText
 import com.xinzy.compose.wan.ui.widget.ProgressDialog
+import com.xinzy.compose.wan.ui.widget.ShowToast
 import com.xinzy.compose.wan.ui.widget.SwipeRefresh
 import com.xinzy.compose.wan.ui.widget.createLoadingItem
 import com.xinzy.compose.wan.ui.widget.createRefreshItem
@@ -76,11 +80,13 @@ data class WechatTabConfig(
 fun WechatTab(
     tab: MainTabs,
     vm: MainViewModel,
+    context: Context,
     modifier: Modifier = Modifier,
     config: WechatTabConfig
 ) {
 
     val viewState = vm.wechatViewState
+    val collectState = vm.wechatCollectState
 
     val pageState: PagerState = config.getPageState(count = viewState.data.size)
     var clickedTabIndex by remember { mutableIntStateOf(config.currentSelectedTabIndex.intValue) }
@@ -101,6 +107,13 @@ fun WechatTab(
         if (pageState.targetPage != config.currentSelectedTabIndex.intValue) {
             config.currentSelectedTabIndex.intValue = pageState.targetPage
         }
+    }
+
+    collectState?.let {
+        ShowToast(
+            msg = it.message,
+            context = context
+        )
     }
 
     Box(
@@ -140,6 +153,7 @@ fun WechatTab(
                 ) { index ->
                     WechatItem(
                         vm = vm,
+                        context = context,
                         modifier = Modifier.fillMaxSize(),
                         index = index,
                         chapter = viewState.data[index],
@@ -157,6 +171,7 @@ fun WechatTab(
 @Composable
 private fun WechatItem(
     vm: MainViewModel,
+    context: Context,
     modifier: Modifier = Modifier,
     index: Int,
     chapter: Chapter,
@@ -167,6 +182,7 @@ private fun WechatItem(
 
     L.d("isRefreshing=${wechatPagingItems.isRefreshing}")
     val keyboard = LocalSoftwareKeyboardController.current
+    val isLogin = User.me().isLogin
 
     SwipeRefresh(
         modifier = modifier,
@@ -221,8 +237,19 @@ private fun WechatItem(
                 }
             }
 
-            items(wechatPagingItems) { article ->
-                ArticleItem(article = article!!)
+            items(
+                wechatPagingItems
+            ) { article ->
+                ArticleItem(
+                    article = article!!,
+                    showCollect = isLogin,
+                    clickAction = {
+                        WebViewActivity.start(context, article.link)
+                    },
+                    callback = { art, collect ->
+                        vm.dispatch(MainEvent.Collect(art, collect, CollectSource.Wechat))
+                    }
+                )
 
                 Spacer(
                     modifier = Modifier

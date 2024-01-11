@@ -18,15 +18,20 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.xinzy.compose.wan.util.mainHandler
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+const val BannerContentType = "ContentBanner"
 
 data class BannerIndicator(
     val selectedColor: Color,
@@ -50,13 +55,24 @@ fun <T> Banner(
     indicator: BannerIndicator = defaultBannerIndicator(),
     itemContent: @Composable (item: T) -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val size = if (infiniteScroll) Int.MAX_VALUE else items.size
+    val pageState = rememberPagerState { size }
+
+    val task = Runnable {
+        coroutineScope.launch {
+            if (infiniteScroll || pageState.currentPage < pageState.pageCount - 1) {
+                pageState.animateScrollToPage(pageState.currentPage + 1)
+            } else {
+                pageState.animateScrollToPage(0)
+            }
+        }
+    }
+
     Box(
         modifier = modifier,
         contentAlignment = Alignment.BottomCenter
     ) {
-        val size = if (infiniteScroll) Int.MAX_VALUE else items.size
-        val pageState = rememberPagerState { size }
-
         HorizontalPager(
             state = pageState,
             modifier = Modifier
@@ -87,16 +103,18 @@ fun <T> Banner(
                 Spacer(modifier = Modifier.width(2.dp))
             }
         }
+    }
 
-        if (pageState.pageCount > 0) {
-            LaunchedEffect(key1 = pageState.currentPage) {
-                delay(timeMillis)
-                if (infiniteScroll || pageState.currentPage < pageState.pageCount - 1) {
-                    pageState.animateScrollToPage(pageState.currentPage + 1)
-                } else {
-                    pageState.animateScrollToPage(0)
-                }
+    if (pageState.pageCount > 0) {
+        DisposableEffect(Unit) {
+            onDispose {
+                mainHandler.removeCallbacks(task)
             }
+        }
+
+        LaunchedEffect(pageState.currentPage) {
+            mainHandler.removeCallbacks(task)
+            mainHandler.postDelayed(task, timeMillis)
         }
     }
 }

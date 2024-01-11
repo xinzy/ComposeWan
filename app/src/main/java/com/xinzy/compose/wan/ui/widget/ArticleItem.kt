@@ -1,5 +1,7 @@
 package com.xinzy.compose.wan.ui.widget
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -22,6 +24,9 @@ import com.xinzy.compose.wan.entity.Article
 import com.xinzy.compose.wan.entity.User
 import com.xinzy.compose.wan.ui.theme.Typography
 import com.xinzy.compose.wan.util.IconFont
+import com.xinzy.compose.wan.util.L
+
+const val ArticleContentType = "ContentArticle"
 
 fun interface OnArticleCollectCallback {
     fun onArticleCollect(article: Article, collect: Boolean)
@@ -32,25 +37,34 @@ fun ArticleItem(
     article: Article,
     modifier: Modifier = Modifier,
     showCollect: Boolean = User.me().isLogin,
+    clickAction: (() -> Unit)? = null,
     callback: OnArticleCollectCallback? = null
 ) {
+    L.d("article item: ${article.id}")
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .clickable { clickAction?.invoke() }
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
         if (showCollect) {
 
-            IconFontButton(
-                icon = if (article.collect) IconFont.Favor else IconFont.UnFavor,
-                onClick = {
-                    callback?.onArticleCollect(article, !article.collect)
-                },
-                style = MaterialTheme.typography.titleMedium,
-                color = if (article.collect) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground
-            )
+            Box(
+                modifier = Modifier.width(18.dp)
+                    .height(18.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                IconFontButton(
+                    icon = if (article.collect) IconFont.Favor else IconFont.UnFavor,
+                    onClick = {
+                        callback?.onArticleCollect(article, !article.collect)
+                    },
+                    style = MaterialTheme.typography.titleMedium,
+                    color = if (article.collect) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground
+                )
+            }
 
             Spacer(modifier = modifier.width(12.dp))
         }
