@@ -4,6 +4,7 @@ import com.xinzy.compose.wan.entity.ApiResult
 import com.xinzy.compose.wan.entity.Article
 import com.xinzy.compose.wan.entity.Banner
 import com.xinzy.compose.wan.entity.Chapter
+import com.xinzy.compose.wan.entity.Favor
 import com.xinzy.compose.wan.entity.Navigation
 import com.xinzy.compose.wan.entity.Rank
 import com.xinzy.compose.wan.entity.Score
@@ -231,6 +232,16 @@ object WanRepository {
      */
     suspend fun uncollect(id: Int, originId: Int = -1): ApiResult<Any?> {
         return when (val result = WanApi.api().uncollect(id, originId)) {
+            is HttpResult.Failure -> ApiResult(result.code, result.msg)
+            is HttpResult.Success -> result.data
+        }
+    }
+
+    /**
+     * 收藏列表
+     */
+    suspend fun collectList(page: Int): ApiResult<WanList<Favor>> {
+        return when (val result = WanApi.api().collectList(page)) {
             is HttpResult.Failure -> ApiResult(result.code, result.msg)
             is HttpResult.Success -> result.data
         }

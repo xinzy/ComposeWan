@@ -6,6 +6,7 @@ import com.xinzy.compose.wan.entity.ApiResult
 import com.xinzy.compose.wan.entity.Article
 import com.xinzy.compose.wan.entity.Banner
 import com.xinzy.compose.wan.entity.Chapter
+import com.xinzy.compose.wan.entity.Favor
 import com.xinzy.compose.wan.entity.Navigation
 import com.xinzy.compose.wan.entity.Rank
 import com.xinzy.compose.wan.entity.Score
@@ -149,6 +150,12 @@ interface WanApi {
     @POST("/lg/uncollect/{id}/json")
     @FormUrlEncoded
     suspend fun uncollect(@Path("id") id: Int, @Field("originId") originId: Int): HttpResult<ApiResult<Any?>>
+
+    /**
+     * 收藏列表
+     */
+    @GET("/lg/collect/list/{page}/json")
+    suspend fun collectList(@Path("page") page: Int): HttpResult<ApiResult<WanList<Favor>>>
 
     companion object {
         private var api: WanApi? = null

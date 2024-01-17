@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -36,10 +34,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.xinzy.compose.wan.R
-import com.xinzy.compose.wan.ui.widget.ShowToast
 import com.xinzy.compose.wan.ui.widget.WanTextField
 import com.xinzy.compose.wan.ui.widget.autoHideKeyboard
 import com.xinzy.compose.wan.util.IconFont
+import com.xinzy.compose.wan.util.ToastUtil
 
 @Composable
 fun LoginScreen(
@@ -55,7 +53,7 @@ fun LoginScreen(
     var showPassword by remember { mutableStateOf(true) }
 
     if (userState.isSuccess) {
-        ShowToast(msg = userState.successData as String)
+        ToastUtil.show(userState.successData as String)
         activity?.finish()
         return
     }

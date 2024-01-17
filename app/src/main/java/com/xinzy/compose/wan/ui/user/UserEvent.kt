@@ -1,5 +1,7 @@
 package com.xinzy.compose.wan.ui.user
 
+import com.xinzy.compose.wan.entity.Favor
+
 sealed class UserEvent {
 
     data class Login(
@@ -17,4 +19,7 @@ sealed class UserEvent {
 
     object Score: UserEvent()
 
+    class UnCollect(
+        val favor: Favor
+    ) : UserEvent()
 }

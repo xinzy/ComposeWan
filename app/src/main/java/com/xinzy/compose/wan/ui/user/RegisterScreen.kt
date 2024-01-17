@@ -20,8 +20,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,9 +36,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.xinzy.compose.wan.R
-import com.xinzy.compose.wan.ui.widget.ShowToast
 import com.xinzy.compose.wan.ui.widget.WanTextField
 import com.xinzy.compose.wan.util.IconFont
+import com.xinzy.compose.wan.util.ToastUtil
 
 @Composable
 fun RegisterScreen(
@@ -58,7 +56,7 @@ fun RegisterScreen(
     var showConfirmPassword by remember { mutableStateOf(true) }
 
     if (userState.isSuccess) {
-        ShowToast(msg = userState.successData as String)
+        ToastUtil.show(userState.successData as String)
         activity?.finish()
         return
     }

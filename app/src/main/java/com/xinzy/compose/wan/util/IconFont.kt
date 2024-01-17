@@ -2,7 +2,7 @@ package com.xinzy.compose.wan.util
 
 enum class IconFont(val text: String) {
     Back("\ue602"),
-    Top("\ue637"),
+    Top("\ue643"),
     New("\ue675"),
     Author("\ue766"),
     Search("\ue8d6"),

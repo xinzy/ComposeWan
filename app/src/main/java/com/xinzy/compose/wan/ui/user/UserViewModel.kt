@@ -8,9 +8,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.xinzy.compose.wan.entity.Favor
 import com.xinzy.compose.wan.entity.Score
 import com.xinzy.compose.wan.entity.User
 import com.xinzy.compose.wan.http.WanRepository
+import com.xinzy.compose.wan.util.L
 import kotlinx.coroutines.launch
 
 class UserViewModel : ViewModel() {
@@ -29,12 +31,20 @@ class UserViewModel : ViewModel() {
         pagingSourceFactory = { RankPagingSource() }
     ).flow.cachedIn(viewModelScope)
 
+    val favorPager = Pager(
+        config = PagingConfig(pageSize = 20),
+        pagingSourceFactory = { FavorPagingSource() }
+    ).flow.cachedIn(viewModelScope)
+
+    var favorResult: FavorResult? by mutableStateOf(null)
+
     fun dispatch(event: UserEvent) {
         when (event) {
             is UserEvent.Login -> login(event.username, event.password)
             is UserEvent.Register -> register(event.username, event.password, event.confirm)
             UserEvent.Logout -> logout()
             UserEvent.Score -> score()
+            is UserEvent.UnCollect -> unCollect(event.favor)
         }
     }
 
@@ -99,6 +109,19 @@ class UserViewModel : ViewModel() {
             score?.let {
                 scoreState = UserState.Success(data = it)
             }
+        }
+    }
+
+    private fun unCollect(favor: Favor) {
+        viewModelScope.launch {
+            val result = WanRepository.uncollect(favor.id, favor.originId ?: -1)
+
+            favorResult = if (result.isSuccess) {
+                FavorResult(true, favor, "取消收藏成功")
+            } else {
+                FavorResult(false, favor, "取消收藏失败")
+            }
+            L.d("UnCollect: ${result.isSuccess}, $favorResult")
         }
     }
 }

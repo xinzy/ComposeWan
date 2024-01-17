@@ -89,7 +89,10 @@ fun UserScreen(
             }
 
             UserUiType.Favor -> {
-
+                FavorScreen(
+                    context = activity,
+                    vm = vm
+                )
             }
 
             UserUiType.Message -> {

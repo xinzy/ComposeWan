@@ -25,12 +25,12 @@ import com.xinzy.compose.wan.ui.web.WebViewActivity
 import com.xinzy.compose.wan.ui.widget.ArticleItem
 import com.xinzy.compose.wan.ui.widget.Banner
 import com.xinzy.compose.wan.ui.widget.BannerContentType
-import com.xinzy.compose.wan.ui.widget.ShowToast
 import com.xinzy.compose.wan.ui.widget.SwipeRefresh
 import com.xinzy.compose.wan.ui.widget.createLoadingItem
 import com.xinzy.compose.wan.ui.widget.createRefreshItem
 import com.xinzy.compose.wan.ui.widget.isRefreshing
 import com.xinzy.compose.wan.util.L
+import com.xinzy.compose.wan.util.ToastUtil
 
 data class HomeTabConfig(
     val lazyListState: LazyListState
@@ -53,10 +53,7 @@ fun HomeTab(
     val isLogin = User.me().isLogin
 
     collectState?.let {
-        ShowToast(
-            msg = it.message,
-            context = context
-        )
+        ToastUtil.show(it.message)
     }
 
     LaunchedEffect(key1 = Unit) {

@@ -1,5 +1,6 @@
 package com.xinzy.compose.wan.ui.user
 
+import com.xinzy.compose.wan.entity.Favor
 import java.lang.IllegalStateException
 
 sealed class UserState {
@@ -28,3 +29,8 @@ sealed class UserState {
     ) : UserState()
 }
 
+data class FavorResult(
+    val success: Boolean,
+    val favor: Favor,
+    val message: String
+)

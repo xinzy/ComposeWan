@@ -44,13 +44,13 @@ import com.xinzy.compose.wan.ui.web.WebViewActivity
 import com.xinzy.compose.wan.ui.widget.ArticleItem
 import com.xinzy.compose.wan.ui.widget.EditText
 import com.xinzy.compose.wan.ui.widget.ProgressDialog
-import com.xinzy.compose.wan.ui.widget.ShowToast
 import com.xinzy.compose.wan.ui.widget.SwipeRefresh
 import com.xinzy.compose.wan.ui.widget.createLoadingItem
 import com.xinzy.compose.wan.ui.widget.createRefreshItem
 import com.xinzy.compose.wan.ui.widget.isRefreshing
 import com.xinzy.compose.wan.util.IconFont
 import com.xinzy.compose.wan.util.L
+import com.xinzy.compose.wan.util.ToastUtil
 
 @OptIn(ExperimentalFoundationApi::class)
 data class WechatTabConfig(
@@ -110,10 +110,7 @@ fun WechatTab(
     }
 
     collectState?.let {
-        ShowToast(
-            msg = it.message,
-            context = context
-        )
+        ToastUtil.show(it.message)
     }
 
     Box(
