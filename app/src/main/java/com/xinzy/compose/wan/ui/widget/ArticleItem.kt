@@ -38,7 +38,7 @@ fun ArticleItem(
     modifier: Modifier = Modifier,
     showCollect: Boolean = User.me().isLogin,
     clickAction: (() -> Unit)? = null,
-    callback: OnArticleCollectCallback? = null
+    collectCallback: OnArticleCollectCallback? = null
 ) {
     L.d("article item: ${article.id}")
     Row(
@@ -59,7 +59,7 @@ fun ArticleItem(
                 IconFontButton(
                     icon = if (article.collect) IconFont.Favor else IconFont.UnFavor,
                     onClick = {
-                        callback?.onArticleCollect(article, !article.collect)
+                        collectCallback?.onArticleCollect(article, !article.collect)
                     },
                     style = MaterialTheme.typography.titleMedium,
                     color = if (article.collect) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground
@@ -119,7 +119,7 @@ fun ArticleItem(
                     if (article.isTop()) {
                         IconFontText(
                             IconFont.Top,
-                            color = MaterialTheme.colorScheme.errorContainer,
+                            color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodyMedium
                         )
 
@@ -129,7 +129,7 @@ fun ArticleItem(
                     if (article.fresh) {
                         IconFontText(
                             IconFont.New,
-                            color = MaterialTheme.colorScheme.errorContainer,
+                            color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodyMedium
                         )
 

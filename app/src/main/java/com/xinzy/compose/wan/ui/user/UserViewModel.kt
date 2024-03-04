@@ -36,7 +36,12 @@ class UserViewModel : ViewModel() {
         pagingSourceFactory = { FavorPagingSource() }
     ).flow.cachedIn(viewModelScope)
 
-    var favorResult: FavorResult? by mutableStateOf(null)
+    private var favorResult: FavorResult? by mutableStateOf(null)
+    fun lastFavorResult(): FavorResult? {
+        val result = favorResult ?: return null
+        favorResult = null
+        return result
+    }
 
     fun dispatch(event: UserEvent) {
         when (event) {

@@ -7,6 +7,7 @@ import com.xinzy.compose.wan.entity.Article
 import com.xinzy.compose.wan.entity.Banner
 import com.xinzy.compose.wan.entity.Chapter
 import com.xinzy.compose.wan.entity.Favor
+import com.xinzy.compose.wan.entity.Hotkey
 import com.xinzy.compose.wan.entity.Navigation
 import com.xinzy.compose.wan.entity.Rank
 import com.xinzy.compose.wan.entity.Score
@@ -52,6 +53,14 @@ interface WanApi {
     /** 首页文章列表 */
     @GET("/article/list/{page}/json")
     suspend fun articleList(@Path("page") page: Int): HttpResult<ApiResult<WanList<Article>>>
+
+    /** 搜索热词*/
+    @GET("/hotkey/json")
+    suspend fun hotkey(): HttpResult<ApiResult<List<Hotkey>>>
+
+    @POST("/article/query/{page}/json")
+    @FormUrlEncoded
+    suspend fun search(@Field("k") keyword: String, @Path("page") page: Int): HttpResult<ApiResult<WanList<Article>>>
 
     /** 体系数据 */
     @GET("/tree/json")

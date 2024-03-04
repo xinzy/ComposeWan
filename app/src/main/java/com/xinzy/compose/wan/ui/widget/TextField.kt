@@ -268,10 +268,17 @@ fun EditText(
                     )
                 }
 
+                val paddingStart = if (leadingIcon == null) 16.dp else 0.dp
+                val paddingEnd = if (trailingIcon == null) 16.dp else 0.dp
+
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(1f),
+                        .weight(1f)
+                        .padding(
+                            start = paddingStart,
+                            end = paddingEnd
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Row(

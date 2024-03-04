@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.xinzy.compose.wan.R
+import com.xinzy.compose.wan.ui.widget.PrimaryButton
 import com.xinzy.compose.wan.ui.widget.WanTextField
 import com.xinzy.compose.wan.ui.widget.autoHideKeyboard
 import com.xinzy.compose.wan.util.IconFont
@@ -63,7 +63,7 @@ fun LoginScreen(
             .fillMaxSize()
             .autoHideKeyboard()
             .padding(
-                top = 96.dp,
+                top = 72.dp,
                 start = 20.dp,
                 end = 20.dp
             )
@@ -80,7 +80,7 @@ fun LoginScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(36.dp))
 
         WanTextField(
             value = username,
@@ -155,7 +155,7 @@ fun LoginScreen(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            Button(
+            PrimaryButton(
                 modifier = Modifier
                     .width(196.dp)
                     .height(48.dp),

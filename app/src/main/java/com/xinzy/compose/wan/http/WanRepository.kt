@@ -5,6 +5,7 @@ import com.xinzy.compose.wan.entity.Article
 import com.xinzy.compose.wan.entity.Banner
 import com.xinzy.compose.wan.entity.Chapter
 import com.xinzy.compose.wan.entity.Favor
+import com.xinzy.compose.wan.entity.Hotkey
 import com.xinzy.compose.wan.entity.Navigation
 import com.xinzy.compose.wan.entity.Rank
 import com.xinzy.compose.wan.entity.Score
@@ -129,6 +130,26 @@ object WanRepository {
             is HttpResult.Success -> {
                 result.data
             }
+        }
+    }
+
+    suspend fun hotkey(): List<Hotkey> {
+        return when (val result = WanApi.api().hotkey()) {
+            is HttpResult.Failure -> listOf()
+            is HttpResult.Success -> {
+                if (result.data.isSuccess) {
+                    result.data.data!!
+                } else {
+                    listOf()
+                }
+            }
+        }
+    }
+
+    suspend fun search(page: Int, keyword: String): ApiResult<WanList<Article>> {
+        return when (val result = WanApi.api().search(keyword, page)) {
+            is HttpResult.Failure -> ApiResult(result.code, result.msg)
+            is HttpResult.Success -> result.data
         }
     }
 

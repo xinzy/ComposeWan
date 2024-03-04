@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.edit
 import com.xinzy.compose.wan.WanApplication
+import kotlin.math.exp
 
 data class User(
     var id: Int = 0,
@@ -15,7 +16,8 @@ data class User(
     var icon: String = "",
     var type: Int = 0,
     var admin: Boolean = false,
-    var token: String = ""
+    var token: String = "",
+    var expire: Long = 0
 ) {
     var loginState by mutableStateOf(false)
 
@@ -28,19 +30,30 @@ data class User(
                 .putInt("type", type)
                 .putString("token", token)
                 .putBoolean("admin", admin)
+                .putLong("expire", expire)
         }
     }
 
     fun load() {
-        id = sp.getInt("id", 0)
-        username = sp.getString("username", "") ?: ""
-        nickname = sp.getString("nickname", "") ?: ""
-        icon = sp.getString("icon", "") ?: ""
-        type = sp.getInt("type", 0)
-        admin = sp.getBoolean("admin", false)
-        token = sp.getString("token", "") ?: ""
+        val expire = sp.getLong("expire", 0)
+        // 登录信息有效
+        if (expire > System.currentTimeMillis()) {
+            this.expire = expire
 
-        loginState = isLogin
+            id = sp.getInt("id", 0)
+            username = sp.getString("username", "") ?: ""
+            nickname = sp.getString("nickname", "") ?: ""
+            icon = sp.getString("icon", "") ?: ""
+            type = sp.getInt("type", 0)
+            admin = sp.getBoolean("admin", false)
+            token = sp.getString("token", "") ?: ""
+
+            loginState = isLogin
+        } else {
+            sp.edit {
+                clear()
+            }
+        }
     }
 
     fun login(user: User): User {
@@ -51,6 +64,7 @@ data class User(
         type = user.type
         admin = user.admin
         token = user.token
+        expire = System.currentTimeMillis() + EXPIRE_TIME
 
         loginState = isLogin
         return this
@@ -74,6 +88,7 @@ data class User(
     val isLogin get() = id > 0
 
     companion object {
+        private const val EXPIRE_TIME: Long = 28 * 86400 * 1000L
         private const val SP_USER = "user"
         private val instance: User by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) { User() }
 

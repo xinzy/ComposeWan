@@ -106,6 +106,7 @@ fun MainScreen(
                     .background(color = MaterialTheme.colorScheme.background)
             ) {
                 MainDrawer(
+                    context = activity,
                     onDismissDrawer = {
                         if (isOpenDrawer) {
                             isOpenDrawer = false
@@ -216,8 +217,17 @@ fun MainDrawer(
 ) {
     val coroutine = rememberCoroutineScope()
 
-    fun startActivity(type: UserUiType) {
-        UserActivity.start(context, type)
+    fun startActivity(type: UserUiType?, action: ((Context) -> Unit)? = null) {
+        type?.let {
+            if (User.me().isLogin) {
+                UserActivity.start(context, it)
+            } else {
+                UserActivity.start(context, UserUiType.Login)
+            }
+        }
+
+        action?.invoke(context)
+
         coroutine.launch {
             delay(5000)
         }
@@ -316,11 +326,7 @@ fun MainDrawer(
                     },
                     selected = false,
                     onClick = {
-                        if (User.me().isLogin) {
-                            startActivity(item.userUiType)
-                        } else {
-                            startActivity(UserUiType.Login)
-                        }
+                        startActivity(item.userUiType, item.action)
                     },
                     icon = {
                         IconFontText(

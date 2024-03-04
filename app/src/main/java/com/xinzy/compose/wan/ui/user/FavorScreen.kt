@@ -43,12 +43,14 @@ fun FavorScreen(
 ) {
     val favorPagingItem = vm.favorPager.collectAsLazyPagingItems()
 
-    val favorResult = vm.favorResult
+    val favorResult = vm.lastFavorResult()
     L.d("favor screen $favorResult")
 
     favorResult?.let {
         ToastUtil.show(it.message)
-        favorPagingItem.itemSnapshotList.items
+        if (it.success) {
+            favorPagingItem.refresh()
+        }
     }
 
     Column(

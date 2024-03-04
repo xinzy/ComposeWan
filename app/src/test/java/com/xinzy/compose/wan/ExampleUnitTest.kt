@@ -14,4 +14,19 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
+
+
+    @Test
+    fun test1() {
+        println(Long.MAX_VALUE)
+
+        val time = 1709113111807
+        println(time)
+
+        val delta = 28 * 86400 * 1000
+        val time2 = time + delta
+        println(time2)
+
+        println(delta)
+    }
 }

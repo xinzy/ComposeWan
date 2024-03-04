@@ -39,7 +39,12 @@
         <activity
             android:name=".ui.user.UserActivity"
             android:exported="false"
-            android:label="@string/title_activity_chapter"
+            android:label="@string/title_activity_user"
+            android:theme="@style/Theme.ComposeWan" />
+        <activity
+            android:name=".ui.search.SearchActivity"
+            android:exported="false"
+            android:label="@string/title_activity_search"
             android:theme="@style/Theme.ComposeWan" />
     </application>
 

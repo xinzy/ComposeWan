@@ -243,7 +243,7 @@ private fun WechatItem(
                     clickAction = {
                         WebViewActivity.start(context, article.link)
                     },
-                    callback = { art, collect ->
+                    collectCallback = { art, collect ->
                         vm.dispatch(MainEvent.Collect(art, collect, CollectSource.Wechat))
                     }
                 )
